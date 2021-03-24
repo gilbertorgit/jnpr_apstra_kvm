@@ -6,6 +6,7 @@ import time
 
 def clean_memory():
 
+    """Clean linux memory"""
     print("---------------------------------------------------------")
     print("---------------------------------------------------------")
     print("--------------------------------------------------------- Clean Memory")
@@ -20,6 +21,10 @@ def clean_memory():
 
 def defining_interfaces():
 
+    """
+    It's going to define Lx virtual interfaces to connect vQFX (spine, leafs, etc)
+    It's going to define vqfx-int virtual interfaces to connect vQFX-RE and vQFX-PFE
+    """
     print("---------------------------------------------------------")
     print("---------------------------------------------------------")
     print("--------------------------------------------------------- Generate Bridges")
@@ -37,6 +42,7 @@ def defining_interfaces():
 
 def defining_dummy_interfaces():
 
+    """Creating dummy interfaces to populate unused ports"""
     print("---------------------------------------------------------")
     print("---------------------------------------------------------")
     print("--------------------------------------------------------- Generate dummy interfaces")
