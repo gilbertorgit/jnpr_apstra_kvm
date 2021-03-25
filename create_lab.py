@@ -125,6 +125,12 @@ def create_lab_vqfx():
 
     print("--------------------------------------------------------- Creating vQFX DC1 Images")
 
+    copy_vqf_pfe = f'cp images/vqfx-20.2R1-2019010209-pfe-qemu.qcow {image_path}vqfx-20.2R1.10-pfe.qcow2'
+    copy_vqf_re = f'cp images/jinstall-vqfx-10-f-20.2R1.10.img {image_path}vqfx-20.2R1.10-re.qcow2'
+
+    subprocess.call(copy_vqf_pfe, shell=True)
+    subprocess.call(copy_vqf_re, shell=True)
+
     for i in vqfx_hosts.keys():
 
         hostname = vqfx_hosts[i].get('hostname')
@@ -192,6 +198,12 @@ def delete_lab_vqfx():
     print("---------------------------------------------------------")
     print("---------------------------------------------------------")
     print("--------------------------------------------------------- Deleting vQFX Topology")
+
+    delete_vqf_pfe = f'rm -f {image_path}vqfx-20.2R1.10-pfe.qcow2'
+    delete_vqf_re = f'rm -f {image_path}vqfx-20.2R1.10-re.qcow2'
+
+    subprocess.call(delete_vqf_pfe, shell=True)
+    subprocess.call(delete_vqf_re, shell=True)
 
     get_vqfx_name = subprocess.Popen("virsh list --all | egrep 'dc[1-2]_' | awk '{print $2}'", shell=True,
                                      stdout=subprocess.PIPE).stdout.read().decode('utf-8')

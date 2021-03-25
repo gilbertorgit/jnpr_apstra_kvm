@@ -54,35 +54,7 @@ This test lab has been built and tested usign:
 
 ## Pre-deployment Server Configs
 
-Change interface name and configure hugepages
-```
-sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="net.ifnames=0 noquiet default_hugepagesz=1G hugepagesz=1G hugepages=16"/' /etc/default/grub
-```
-
-Configure Bridge br0
-
-```
-vi /etc/network/interfaces
-```
-
-```
-auto br0
-iface br0 inet static
-      address 192.168.0.199
-      netmask 255.255.255.0
-      network 192.168.0.0
-      gateway 192.168.0.1
-      dns-nameservers 8.8.8.8 8.8.4.4
-      bridge_ports eth0
-      bridge_stp off
-      bridge_maxwait 0
-```
-
-```
-reboot
-```
-
-## Pre-deployment Basic Packages
+### Pre-deployment Basic Packages
 
 **Packages Installation and configuration**
 
@@ -103,18 +75,6 @@ usermod -aG libvirtd lab
 usermod -aG kvm lab
 ```
 
-## Preparing the environment
-
-Download all images to "images" directory
-
-```
-# ls -l images/
--rw-r--r-- 1 lab  lab  1951413760 Mar 23 12:48 aos_server_3.3.0.2-46.qcow2
--rw-r--r-- 1 root root  858783744 Apr 22  2020 CentOS-7-x86_64-GenericCloud.qcow2
--rw-r--r-- 1 root root  588251136 Mar 23 13:32 jinstall-vqfx-10-f-20.2R1.10.img
--rw-r--r-- 1 root root  762839040 Mar 23 13:33 vqfx-20.2R1-2019010209-pfe-qemu.qcow
-```
-
 ## Virtual MX Installation
 
 * We are using vMX to simulate our Core MPLS.
@@ -128,36 +88,120 @@ sed -i -e 's/KVM_HUGEPAGES=0/KVM_HUGEPAGES=1/' /etc/default/qemu-kvm
 Install additinal vMX packages
 
 ```
-apt-get install python-pip 
-apt-get install python-netifaces
+apt-get -y install python-pip python-netifaces
 
-pip install pyyaml
+pip install pyyaml 
 pip install netifaces
 ```
 
-Copy Images
+Change interface name and configure hugepages
 ```
-cp /home/lab/vmx/images/junos-vmx-x86-64-20.4R1.12.qcow2 /var/lib/libvirt/images/junos-vmx-x86-64-20.4R1.12.qcow2
-cp /home/lab/vmx/images/vmxhdd.img /var/lib/libvirt/images/vmxhdd.img
-cp /home/lab/vmx/images/vFPC-20201209.img /var/lib/libvirt/images/vFPC-20201209.img
+sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="net.ifnames=0 noquiet default_hugepagesz=1G hugepagesz=1G hugepages=16"/' /etc/default/grub
 ```
 
-Download and copy vMX and network configuration
+Configure Bridge br0
+
 ```
-cp /home/lab/r1-apstra.conf config/r1-apstra.conf
-cp /home/lab/r2-apstra.conf config/r2-apstra.conf
-cp /home/lab/apstra-topology.conf config/apstra-topology.conf
+vi /etc/network/interfaces
+
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+
+auto br0
+iface br0 inet static
+      address 192.168.0.199
+      netmask 255.255.255.0
+      network 192.168.0.0
+      gateway 192.168.0.1
+      dns-nameservers 8.8.8.8 8.8.4.4
+      bridge_ports eth0
+      bridge_stp off
+      bridge_maxwait 0
 ```
+
+```
+update-grub
+
+reboot
+```
+
+## Preparing the environment
+
+### Download vMX image to /home/lab
+
+```
+root@lab:/home/lab# tar -xzvf vmx-bundle-20.4R1.12.tgz
+
+root@lab:/home/lab# cd vmx/
+
+root@lab:/home/lab/vmx# 
+
+root@lab:/home/lab/vmx# cp images/junos-vmx-x86-64-20.4R1.12.qcow2 /var/lib/libvirt/images/junos-vmx-x86-64-20.4R1.12.qcow2
+
+root@lab:/home/lab/vmx# cp images/vmxhdd.img /var/lib/libvirt/images/vmxhdd.img
+
+root@lab:/home/lab/vmx# cp images/vFPC-20201209.img /var/lib/libvirt/images/vFPC-20201209.img
+
+```
+### Download Apstra, Centos GenericCloud and vQFX Images and copy to vmx/images
+
+You will have a directory like that one:
+
+```
+root@lab:/home/lab/vmx# ls -l images/
+total 7997348
+-rw-r--r-- 1 root root 1951413760 Mar 25 11:07 aos_server_3.3.0.2-46.qcow2
+-rw-r--r-- 1 root root  858783744 Mar 25 11:08 CentOS-7-x86_64-GenericCloud.qcow2
+-rw-r--r-- 1 root root  588251136 Mar 25 11:08 jinstall-vqfx-10-f-20.2R1.10.img
+-rw-r--r-- 1  930  930 1391656960 Dec 20 14:46 junos-vmx-x86-64-20.4R1.12.qcow2
+-rw-r--r-- 1  930  930   10485760 Dec 10 06:46 metadata-usb-fpc0.img
+-rw-r--r-- 1  930  930   10485760 Dec 10 06:46 metadata-usb-fpc10.img
+-rw-r--r-- 1  930  930   10485760 Dec 10 06:46 metadata-usb-fpc11.img
+-rw-r--r-- 1  930  930   10485760 Dec 10 06:46 metadata-usb-fpc1.img
+-rw-r--r-- 1  930  930   10485760 Dec 10 06:46 metadata-usb-fpc2.img
+-rw-r--r-- 1  930  930   10485760 Dec 10 06:46 metadata-usb-fpc3.img
+-rw-r--r-- 1  930  930   10485760 Dec 10 06:46 metadata-usb-fpc4.img
+-rw-r--r-- 1  930  930   10485760 Dec 10 06:46 metadata-usb-fpc5.img
+-rw-r--r-- 1  930  930   10485760 Dec 10 06:46 metadata-usb-fpc6.img
+-rw-r--r-- 1  930  930   10485760 Dec 10 06:46 metadata-usb-fpc7.img
+-rw-r--r-- 1  930  930   10485760 Dec 10 06:46 metadata-usb-fpc8.img
+-rw-r--r-- 1  930  930   10485760 Dec 10 06:46 metadata-usb-fpc9.img
+-rw-r--r-- 1  930  930   10485760 Dec 10 06:46 metadata-usb-re0.img
+-rw-r--r-- 1  930  930   10485760 Dec 10 06:46 metadata-usb-re1.img
+-rw-r--r-- 1  930  930   10485760 Dec 10 06:46 metadata-usb-re.img
+-rw-r--r-- 1  930  930   10485760 Dec 10 06:46 metadata-usb-service-pic-10g.img
+-rw-r--r-- 1  930  930   10485760 Dec 10 06:46 metadata-usb-service-pic-2g.img
+-rw-r--r-- 1  930  930   10485760 Dec 10 06:46 metadata-usb-service-pic-4g.img
+-rw-r--r-- 1  930  930 2447376384 Dec 10 06:46 vFPC-20201209.img
+-rw-r--r-- 1  930  930     197120 Dec 10 06:46 vmxhdd.img
+-rw-r--r-- 1 root root  762839040 Mar 25 11:08 vqfx-20.2R1-2019010209-pfe-qemu.qcow
+```
+
+'''
+root@lab:/home/lab/vmx# cd ..
+
+root@lab:/home/lab# cp -rp jnpr_apstra_kvm/* vmx/
+
+root@lab:/home/lab# cd vmx/
+'''
 
 ## Python Script 
 
-Download the python scripts into the vMX directory
+change the echo command to: 16384
 
-```
-cp /home/lab/console_config.py /home/lab/vmx/
-cp /home/lab/create_lab.py /home/lab/vmx/
-cp /home/lab/start_stop.py /home/lab/vmx/
-```
+'''
+
+'''
+
+
 
 
 ## Optional Config - UKSM 
