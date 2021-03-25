@@ -40,7 +40,7 @@ Important Information
 
 ## Pre-requisites configs
 
-This test lab has beeen built and tested usign:
+This test lab has been built and tested usign:
 
 ```
 1. Ubuntu 16.04
