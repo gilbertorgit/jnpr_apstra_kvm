@@ -13,7 +13,7 @@ image_path = '/var/lib/libvirt/images/'
 
 vqfx_hosts = {'dc1_leaf_1_re': {'hostname' : 'dc1_leaf_1_re','mgmt_ip': '192.168.0.217','mgmt_int': 'br0',
                              'fabric_int': 'vqfx-int-1', 'dummy_int': 'dummy-int-1', 'xe_0': 'L1', 'xe_1': 'L2',
-                             'xe_2': 'dummy-int-1', 'xe_3': 'dummy-int-1', 'xe_4': 'L17', 'xe_5': 'dummy-int-1',
+                             'xe_2': 'dummy-int-1', 'xe_3': 'dummy-int-1', 'xe_4': 'L29', 'xe_5': 'dummy-int-1',
                              'xe_6': 'dummy-int-1', 'xe_7': 'dummy-int-1', 'xe_8': 'dummy-int-1',
                              'xe_9': 'dummy-int-1'},
               'dc1_leaf_1_pfe': {'hostname': 'dc1_leaf_1_pfe', 'fabric_int': 'vqfx-int-1', 'dummy_int': 'dummy-int-1'},
@@ -28,7 +28,7 @@ vqfx_hosts = {'dc1_leaf_1_re': {'hostname' : 'dc1_leaf_1_re','mgmt_ip': '192.168
               'dc1_leaf_3_re': {'hostname': 'dc1_leaf_3_re', 'mgmt_ip': '192.168.0.219', 'mgmt_int': 'br0',
                                 'fabric_int': 'vqfx-int-3', 'dummy_int': 'dummy-int-3', 'xe_0': 'L5', 'xe_1': 'L6',
                                 'xe_2': 'dummy-int-3', 'xe_3': 'dummy-int-3', 'xe_4': 'L20', 'xe_5': 'L21',
-                                'xe_6': 'L21', 'xe_7': 'dummy-int-3', 'xe_8': 'dummy-int-3',
+                                'xe_6': 'L22', 'xe_7': 'dummy-int-3', 'xe_8': 'dummy-int-3',
                                 'xe_9': 'dummy-int-3'},
               'dc1_leaf_3_pfe': {'hostname': 'dc1_leaf_3_pfe', 'fabric_int': 'vqfx-int-3', 'dummy_int': 'dummy-int-3'},
 
