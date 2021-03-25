@@ -144,7 +144,7 @@ def create_fabric_interface():
         subprocess.call(cmd_brctl, shell=True)
         subprocess.call(cmd_ifconfig, shell=True)
 
-        lacp_ldp = f'echo 65535 > /sys/class/net/{br_interface}/bridge/group_fwd_mask'
+        lacp_ldp = f'echo 16384 > /sys/class/net/{br_interface}/bridge/group_fwd_mask'
         subprocess.call(lacp_ldp, shell=True)
 
         print(f'- Creating Interface {br_interface}')
@@ -353,7 +353,7 @@ if __name__ == "__main__":
             create_topology()
             run_time = time.time() - start_time
             print("** Time to run: %s sec" % round(run_time, 2))
-            print("- Default vQFX and vMX user and password")
+            print("- Default vQFX, vMX and Host VMs user and password")
             print("- lab/lab123 and root/juniper123")
         else:
             print("Stopping the script!!!")
@@ -366,7 +366,6 @@ if __name__ == "__main__":
             delete_topology()
             run_time = time.time() - start_time
             print("** Time to run: %s sec" % round(run_time, 2))
-            print("****** You still need to delete Host servers as well as Apstra Server")
         else:
             print("Stopping the script!!!")
             exit()

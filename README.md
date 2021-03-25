@@ -61,7 +61,7 @@ This test lab has been built and tested usign:
 ```
 add-apt-repository ppa:deadsnakes/ppa
 apt-get -y update
-apt-get -y install qemu qemu-kvm libvirt-daemon  bridge-utils virt-manager ntp net-tools git python3.7 python3-dev python3-pip python3.7-dev
+apt-get -y install qemu qemu-kvm libvirt-daemon  bridge-utils virt-manager ntp net-tools git python3.7 python3-dev python3-pip python3.7-dev libguestfs-tools
 
 
 python3.7 -m pip install pexpect
@@ -194,7 +194,7 @@ root@lab:/home/lab# cd vmx/
 '''
 
 ## Python Script 
-
+65535
 change the echo command to: 16384
 
 '''

@@ -154,7 +154,6 @@ def create_lab_vqfx():
         if re.match('.*._re.*', hostname):
             vqfx_vm = f'cp {re_image} {image_path}{hostname}.qcow2'
             subprocess.call(vqfx_vm, shell=True)
-            print(vqfx_vm)
 
             install_vqfx_re = f'virt-install --name {hostname} \
             --memory 2048 \
@@ -179,7 +178,6 @@ def create_lab_vqfx():
         else:
             vqfx_vm = f'cp {pfe_image} {image_path}{hostname}.qcow2'
             subprocess.call(vqfx_vm, shell=True)
-            print(vqfx_vm)
 
             install_vqfx_pfe = f'virt-install --name {hostname} \
             --memory 2048 \
