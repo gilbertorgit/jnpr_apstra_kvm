@@ -372,6 +372,24 @@ def create_lab_vmx():
 
     subprocess.call(create_r1, shell=True)
     subprocess.call(create_r2, shell=True)
+    sleep(10)
+
+    vmx_info = subprocess.Popen("virsh list --all | egrep 'vcp-' | awk '{print $2}'", shell=True,
+                                 stdout=subprocess.PIPE).stdout.read().decode('utf-8')
+    # creates list of the vqfx_info and clean the empty spaces
+    li_vmx = list(vmx_info.split("\n"))
+    result = [x for x in li_vmx if x]
+
+    if 'vcp-r1' not in result:
+        print('----- Trying to create R1 again')
+
+        subprocess.call(create_r1, shell=True)
+
+    if 'vcp-r2' not in result:
+        print('----- Trying to create R2 again')
+
+        subprocess.call(create_r2, shell=True)
+
     subprocess.call(bind_interfaces, shell=True)
 
 

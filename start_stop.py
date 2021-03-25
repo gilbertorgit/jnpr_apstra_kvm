@@ -198,21 +198,38 @@ def delete_fabric_interface():
 def start_vmx():
 
     
-    print("############################################################ Start vMX R1 and R2")
+    print("########################################################## Start vMX R1 and R2")
     start_r1 = f'./vmx.sh --start --cfg config_apstra/r1-apstra.conf'
     start_r2 = f'./vmx.sh --start --cfg config_apstra/r2-apstra.conf'
     bind_interfaces = f'./vmx.sh --bind-dev --cfg config_apstra/apstra-topology.conf'
 
     subprocess.call(start_r1, shell=True)
-    sleep(2)
     subprocess.call(start_r2, shell=True)
-    sleep(2)
+
+    vmx_info = subprocess.Popen("virsh list --all | egrep 'vcp-' | awk '{print $2}'", shell=True,
+                                stdout=subprocess.PIPE).stdout.read().decode('utf-8')
+    # creates list of the vqfx_info and clean the empty spaces
+    li_vmx = list(vmx_info.split("\n"))
+    result = [x for x in li_vmx if x]
+
+    if 'vcp-r1' not in result:
+        print('----- Trying to start R1 again')
+
+        subprocess.call(start_r1, shell=True)
+
+    if 'vcp-r2' not in result:
+        print('----- Trying to start R2 again')
+
+        subprocess.call(start_r2, shell=True)
+
+
+
     subprocess.call(bind_interfaces, shell=True)
 
 
 def stop_vmx():
 
-    print("############################################################ Stop vMX R1 and R2")
+    print("########################################################## Stop vMX R1 and R2")
     stop_r1 = f'./vmx.sh --stop --cfg config_apstra/r1-apstra.conf'
     stop_r2 = f'./vmx.sh --stop --cfg config_apstra/r2-apstra.conf'
     unbind_interfaces = f'./vmx.sh --unbind-dev --cfg config_apstra/apstra-topology.conf'
@@ -224,7 +241,7 @@ def stop_vmx():
 
 def start_servers():
 
-    print("############################################################ Start Servers and Apstra Server")
+    print("########################################################## Start Host VMs and Apstra Server")
     vqfx_list = getting_destroyed_servers()
 
     for vqfx in vqfx_list:
@@ -236,7 +253,7 @@ def start_servers():
 
 def stop_servers():
 
-    print("############################################################ Destroy Servers")
+    print("########################################################## Destroy Servers")
     vqfx_list = getting_running_servers()
 
     for vqfx in vqfx_list:
@@ -248,7 +265,7 @@ def stop_servers():
 
 def start_vqfx():
 
-    print("############################################################ Start vQFX")
+    print("########################################################## Start vQFX")
     vqfx_list = getting_destroyed_vqfx()
 
     for vqfx in vqfx_list:
@@ -260,7 +277,7 @@ def start_vqfx():
 
 def stop_vqfx():
 
-    print("############################################################ Destroy vQFX")
+    print("########################################################## Destroy vQFX")
     vqfx_list = getting_running_vqfx()
 
     for vqfx in vqfx_list:
@@ -272,7 +289,7 @@ def stop_vqfx():
 
 def start_topology():
 
-    print("############################################################ Start Topology")
+    print("########################################################## Start Topology")
     clean_memory()
     create_fabric_interface()
     start_vqfx()
@@ -282,7 +299,7 @@ def start_topology():
 
 def stop_topology():
 
-    print("############################################################ Stop Topology")
+    print("########################################################## Stop Topology")
     stop_vqfx()
     stop_servers()
     stop_vmx()
@@ -292,25 +309,25 @@ def stop_topology():
 
 def create_topology():
 
-    print("############################################################ Create Topology")
+    print("########################################################## Create Topology")
     clean_memory()
     create_fabric_interface()
-    create_lab.create_lab_aos()
-    sleep(10)
-    create_lab.create_lab_vqfx()
-    sleep(10)
-    create_lab.create_lab_vms()
-    sleep(10)
+    #create_lab.create_lab_aos()
+    #sleep(10)
+    #create_lab.create_lab_vqfx()
+    #sleep(10)
+    #create_lab.create_lab_vms()
+    #sleep(10)
     create_lab.create_lab_vmx()
-    sleep(5)
-    create_lab.configure_vqfx()
-    sleep(5)
-    create_lab.configure_vmx()
+    #sleep(5)
+    #create_lab.configure_vqfx()
+    #sleep(5)
+    #create_lab.configure_vmx()
 
 
 def delete_topology():
 
-    print("############################################################ Delete Topology")
+    print("########################################################## Delete Topology")
     create_lab.delete_lab_vqfx()
     create_lab.delete_lab_vmx()
     create_lab.delete_lab_vms()
@@ -321,12 +338,11 @@ def delete_topology():
 
 if __name__ == "__main__":
 
-    print("1 - Start Topology")
-    print("2 - Stop Topology")
-    print("3 - Clean Memory Only")
-    print("4 - Create topology from Scratch (Make sure you have no topology already running!!"
-          "You can run option 5 to delete everything - Be careful!!")
-    print("5 - Delete topology! This option will delete everything, be sure you want to proceed! ")
+    print("1 - Start Topology\n")
+    print("2 - Stop Topology\n")
+    print("3 - Clean Memory Only\n")
+    print("4 - Create topology\n")
+    print("5 - Delete topology\n")
 
     select_function = input("Select one Option: ") or None
 

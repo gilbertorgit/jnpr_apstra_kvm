@@ -59,20 +59,21 @@ This test lab has been built and tested usign:
 **Packages Installation and configuration**
 
 ```
-add-apt-repository ppa:deadsnakes/ppa
-apt-get -y update
-apt-get -y install qemu qemu-kvm libvirt-daemon  bridge-utils virt-manager ntp net-tools git python3.7 python3-dev python3-pip python3.7-dev libguestfs-tools
+lab@lab:~$ su -
+root@lab:~# add-apt-repository ppa:deadsnakes/ppa
+root@lab:~# apt-get -y update
+root@lab:~# apt-get -y install qemu qemu-kvm libvirt-daemon  bridge-utils virt-manager ntp net-tools git python3.7 python3-dev python3-pip python3.7-dev libguestfs-tools
 
 
-python3.7 -m pip install pexpect
+root@lab:~# python3.7 -m pip install pexpect
 ```
 
 ```
-usermod -aG libvirtd $USER
-usermod -aG kvm $USER
+root@lab:~# usermod -aG libvirtd $USER
+root@lab:~# usermod -aG kvm $USER
 
-usermod -aG libvirtd lab
-usermod -aG kvm lab
+root@lab:~# usermod -aG libvirtd lab
+root@lab:~# usermod -aG kvm lab
 ```
 
 ## Virtual MX Installation
@@ -82,27 +83,28 @@ usermod -aG kvm lab
 Enable qemu-kvm hugepages
 
 ```
-sed -i -e 's/KVM_HUGEPAGES=0/KVM_HUGEPAGES=1/' /etc/default/qemu-kvm
+root@lab:~# sed -i -e 's/KVM_HUGEPAGES=0/KVM_HUGEPAGES=1/' /etc/default/qemu-kvm
 ```
 
 Install additinal vMX packages
 
 ```
-apt-get -y install python-pip python-netifaces
+root@lab:~# apt-get -y install python-pip python-netifaces
 
-pip install pyyaml 
-pip install netifaces
+root@lab:~# pip install pyyaml 
+root@lab:~# pip install netifaces
 ```
 
 Change interface name and configure hugepages
 ```
-sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="net.ifnames=0 noquiet default_hugepagesz=1G hugepagesz=1G hugepages=16"/' /etc/default/grub
+root@lab:~# sed -i -e 's/GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX="net.ifnames=0 biosdevname=0 default_hugepagesz=1G hugepagesz=1G hugepages=16G"/' /etc/default/grub
+
 ```
 
 Configure Bridge br0
 
 ```
-vi /etc/network/interfaces
+root@lab:~# vi /etc/network/interfaces
 
 # This file describes the network interfaces available on your system
 # and how to activate them. For more information, see interfaces(5).
@@ -128,9 +130,9 @@ iface br0 inet static
 ```
 
 ```
-update-grub
+root@lab:~# update-grub
 
-reboot
+root@lab:~# reboot
 ```
 
 ## Preparing the environment
@@ -185,24 +187,49 @@ total 7997348
 -rw-r--r-- 1 root root  762839040 Mar 25 11:08 vqfx-20.2R1-2019010209-pfe-qemu.qcow
 ```
 
-'''
+```
 root@lab:/home/lab/vmx# cd ..
+
+root@lab:/home/lab# git clone https://github.com/gmr2020git/jnpr_apstra_kvm.git
 
 root@lab:/home/lab# cp -rp jnpr_apstra_kvm/* vmx/
 
 root@lab:/home/lab# cd vmx/
-'''
+```
 
 ## Python Script 
 65535
 change the echo command to: 16384
 
-'''
+1 - Start Topology - It will start the entire topoloy (you have to create it first - Option 4)
+2 - Stop Topology - It will stop the entire topology
+3 - Clean Memory Only - It will clean your server memory
+4 - Create Topology - It will create the entire topology from scratch
+5 - Delete Topology - It will delete and remove the entire topology and images
+```
+root@lab:/home/lab/vmx# python3.7 start_stop.py 
+1 - Start Topology
+2 - Stop Topology
+3 - Clean Memory Only
+4 - Create topology from Scratch (Make sure you have no topology already running!!You can run option 5 to delete everything - Be careful!!
+5 - Delete topology! This option will delete everything, be sure you want to proceed! 
+```
 
-'''
+## Core vMX R1 and R2 Configuration
+
+r1 - check and apply the core1.conf - core_config folder
+r2 - check and apply the core2.conf - core_config folder
 
 
 
+# Workaround 
+
+```
+If you got an error to start vMX r1 and/or r2 please run the following commands:
+./vmx.sh --start --cfg config_apstra/r1-apstra.conf
+
+./vmx.sh --start --cfg config_apstra/r2-apstra.conf
+```
 
 ## Optional Config - UKSM 
 
@@ -224,7 +251,7 @@ Swap:             0           0           0
 ```
 
 ```
-apt-get -y install git fakeroot build-essential ncurses-dev xz-utils libssl-dev bc
+apt-get -y install git fakeroot build-essential ncurses-dev xz-utils libssl-dev bc gnupg2
 apt-get -y --no-install-recommends install kernel-package
 ```
 
@@ -283,6 +310,13 @@ Make sure you select the right option to enable UKSM and select the default opti
 
 Compile your new kernel - 14 is the number of my processor core (It will take a while) 
 ```
+Enable KSM for page merging (KSM) [Y/n/?] y
+  Choose UKSM/KSM strategy
+  > 1. Ultra-KSM for page merging (UKSM) (NEW)
+    2. Legacy KSM implementation (KSM_LEGACY) (NEW)
+```
+
+```
 make -j14 deb-pkg LOCALVERSION=-uksm
 
 # You should see something like that 
@@ -317,8 +351,6 @@ Linux ubuntu 4.9.40-uksm
 Add additional notes about how to deploy this on a live system
 
 ## Built With
-
-
 
 ## Versioning
 
