@@ -283,6 +283,9 @@ def delete_lab_vms():
     print("---------------------------------------------------------")
     print("--------------------------------------------------------- Deleting Host VMs")
 
+    delete_cloud_image = f'rm -f /var/lib/libvirt/images/CentOS-7-x86_64-GenericCloud.qcow2'
+    subprocess.call(delete_cloud_image, shell=True)
+
     get_c_vm_name = subprocess.Popen("virsh list --all | egrep 'c[1-2]_v' | awk '{print $2}'", shell=True,
                                      stdout=subprocess.PIPE).stdout.read().decode('utf-8')
     li_vm = list(get_c_vm_name.split("\n"))
