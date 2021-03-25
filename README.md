@@ -52,7 +52,7 @@ This test lab has been built and tested usign:
 
 ***Although, we are downloading and copying packages and configurations within the /home/lab user directory, it's worth mentioning that I'm using root user access for every single step described here.***
 
-## Pre-deployment Configs
+## Pre-deployment Server Configs
 
 Change interface name and configure hugepages
 ```
@@ -82,7 +82,7 @@ iface br0 inet static
 reboot
 ```
 
-## Pre-deployment Packages
+## Pre-deployment Basic Packages
 
 **Packages Installation and configuration**
 
@@ -125,7 +125,7 @@ Enable qemu-kvm hugepages
 sed -i -e 's/KVM_HUGEPAGES=0/KVM_HUGEPAGES=1/' /etc/default/qemu-kvm
 ```
 
-Install additinal packages
+Install additinal vMX packages
 
 ```
 apt-get install python-pip 
