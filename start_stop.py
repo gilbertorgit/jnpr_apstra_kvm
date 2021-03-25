@@ -22,8 +22,8 @@ def clean_memory():
 def defining_interfaces():
 
     """
-    It's going to define Lx virtual interfaces to connect vQFX (spine, leafs, etc)
-    It's going to define vqfx-int virtual interfaces to connect vQFX-RE and vQFX-PFE
+    define Lx virtual interfaces to connect vQFX (spine, leafs, etc)
+    define vqfx-int virtual interfaces to connect vQFX-RE and vQFX-PFE
     """
     print("---------------------------------------------------------")
     print("---------------------------------------------------------")
@@ -42,7 +42,9 @@ def defining_interfaces():
 
 def defining_dummy_interfaces():
 
-    """Creating dummy interfaces to populate unused ports"""
+    """
+    Define dummy interfaces to populate unused ports
+    """
     print("---------------------------------------------------------")
     print("---------------------------------------------------------")
     print("--------------------------------------------------------- Generate dummy interfaces")
@@ -57,6 +59,9 @@ def defining_dummy_interfaces():
 
 def getting_destroyed_vqfx():
 
+    """
+    create a list with all destroyed vQFX
+    """
     print("---------------------------------------------------------")
     print("---------------------------------------------------------")
     print("--------------------------------------------------------- Get destroyed vqfx")
@@ -71,6 +76,9 @@ def getting_destroyed_vqfx():
 
 def getting_destroyed_servers():
 
+    """
+    create a list with all destroyed customer vm and Apstra Server
+    """
     print("---------------------------------------------------------")
     print("---------------------------------------------------------")
     print("--------------------------------------------------------- Get destroyed Servers")
@@ -85,6 +93,9 @@ def getting_destroyed_servers():
 
 def getting_running_vqfx():
 
+    """
+    create a list with all running vQFX
+    """
     print("---------------------------------------------------------")
     print("---------------------------------------------------------")
     print("--------------------------------------------------------- Get Running vqfx")
@@ -99,6 +110,9 @@ def getting_running_vqfx():
 
 def getting_running_servers():
 
+    """
+    create a list with all running vQFX customer vm and Apstra Server
+    """
     print("---------------------------------------------------------")
     print("---------------------------------------------------------")
     print("--------------------------------------------------------- Get Running Servers")
@@ -113,6 +127,9 @@ def getting_running_servers():
 
 def create_fabric_interface():
 
+    """
+    Create logical interfaces
+    """
     interface_list = defining_interfaces()
     dummy_interface_list = defining_dummy_interfaces()
 
@@ -124,9 +141,10 @@ def create_fabric_interface():
 
         cmd_brctl = f'/sbin/brctl addbr {br_interface}'
         cmd_ifconfig = f'/sbin/ifconfig {br_interface} up'
-        lacp_ldp = f'echo 65535 > /sys/class/net/{br_interface}/bridge/group_fwd_mask'
         subprocess.call(cmd_brctl, shell=True)
         subprocess.call(cmd_ifconfig, shell=True)
+
+        lacp_ldp = f'echo 65535 > /sys/class/net/{br_interface}/bridge/group_fwd_mask'
         subprocess.call(lacp_ldp, shell=True)
 
         print(f'- Creating Interface {br_interface}')
@@ -154,7 +172,6 @@ def delete_fabric_interface():
 
     print("--------------------------------------------------------- Delete fabric ridges")
     for br_interface in interface_list:
-
 
 
         cmd_brctl = f'/sbin/brctl delbr {br_interface}'
@@ -279,10 +296,15 @@ def create_topology():
     clean_memory()
     create_fabric_interface()
     create_lab.create_lab_aos()
+    sleep(10)
     create_lab.create_lab_vqfx()
-    create_lab.create_lab_vmx()
+    sleep(10)
     create_lab.create_lab_vms()
+    sleep(10)
+    create_lab.create_lab_vmx()
+    sleep(5)
     create_lab.configure_vqfx()
+    sleep(5)
     create_lab.configure_vmx()
 
 
@@ -326,7 +348,7 @@ if __name__ == "__main__":
     elif select_function == '4':
         print("Are you sure you want to create a topology from scratch?")
         select_function = input("Type 'yes' or 'no': ").upper() or None
-        if select_function == 'YES' or None:
+        if select_function == 'YES' or 'Y' or None:
             start_time = time.time()
             create_topology()
             run_time = time.time() - start_time
@@ -339,7 +361,7 @@ if __name__ == "__main__":
     elif select_function == '5':
         print("Are you sure you want to delete everything?")
         select_function = input("Type 'yes' or 'no': ").upper() or None
-        if select_function == 'YES' or None:
+        if select_function == 'YES' or 'Y' or None:
             start_time = time.time()
             delete_topology()
             run_time = time.time() - start_time

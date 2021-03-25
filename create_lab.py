@@ -404,7 +404,7 @@ def configure_vqfx():
 
 def configure_vmx():
 
-    print("We will wait around 1 minutes to start the initial vMX(R1 and R2) basic configuration")
+    print("We will wait around 1 minute to start the initial vMX(R1 and R2) basic configuration")
     sleep(60)
 
     print("Sending r1 and 192.168.0.176 to configure basic access")
