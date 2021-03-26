@@ -2,7 +2,7 @@
 
 ## Authors
 
-* **Gilberto Rampini**
+**Gilberto Rampini**
 
 ## Topology
 
