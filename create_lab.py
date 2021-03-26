@@ -4,12 +4,10 @@ import console_config
 from time import sleep
 import re
 
-
 re_image = '/var/lib/libvirt/images/vqfx-20.2R1.10-re.qcow2'
 pfe_image = '/var/lib/libvirt/images/vqfx-20.2R1.10-pfe.qcow2'
 generic_centos = '/var/lib/libvirt/images/CentOS-7-x86_64-GenericCloud.qcow2'
 image_path = '/var/lib/libvirt/images/'
-
 
 vqfx_hosts = {'dc1_leaf_1_re': {'hostname' : 'dc1_leaf_1_re','mgmt_ip': '192.168.0.217','mgmt_int': 'br0',
                              'fabric_int': 'vqfx-int-1', 'dummy_int': 'dummy-int-1', 'xe_0': 'L1', 'xe_1': 'L2',
@@ -257,9 +255,9 @@ def create_lab_vms():
             --ram 1024 --vcpus 1 \
             --disk {image_path}{hostname}.qcow2,format=qcow2,bus=virtio \
             --disk {image_path}{hostname}-config.iso,device=cdrom \
-            --network bridge={eth0},model=virtio \
-            --network bridge={eth1},model=virtio \
-            --network bridge={eth2},model=virtio \
+            --network bridge={eth0},model=e1000 \
+            --network bridge={eth1},model=e1000 \
+            --network bridge={eth2},model=e1000 \
             --os-type=linux --os-variant=rhel7 \
             --noautoconsole \
             --accelerate'
@@ -269,8 +267,8 @@ def create_lab_vms():
             --ram 1024 --vcpus 1 \
             --disk {image_path}{hostname}.qcow2,format=qcow2,bus=virtio \
             --disk {image_path}{hostname}-config.iso,device=cdrom \
-            --network bridge={eth0},model=virtio \
-            --network bridge={eth1},model=virtio \
+            --network bridge={eth0},model=e1000 \
+            --network bridge={eth1},model=e1000 \
             --os-type=linux --os-variant=rhel7 \
             --noautoconsole \
             --accelerate'
@@ -379,7 +377,9 @@ def create_lab_vmx():
     # creates list of the vqfx_info and clean the empty spaces
     li_vmx = list(vmx_info.split("\n"))
     result = [x for x in li_vmx if x]
-
+    print("########################### test vMX ##################################################################")
+    print(result)
+    print("########################### test vMX ##################################################################")
     if 'vcp-r1' not in result:
         print('----- Trying to create R1 again')
 

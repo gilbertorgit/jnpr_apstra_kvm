@@ -185,8 +185,6 @@ def delete_fabric_interface():
 
     for dummy in dummy_interface_list:
 
-
-
         cmd_brctl = f'/sbin/brctl delbr {dummy}'
         cmd_ifconfig = f'/sbin/ifconfig {dummy} down'
         subprocess.call(cmd_ifconfig, shell=True)
@@ -197,7 +195,6 @@ def delete_fabric_interface():
 
 def start_vmx():
 
-    
     print("########################################################## Start vMX R1 and R2")
     start_r1 = f'./vmx.sh --start --cfg config_apstra/r1-apstra.conf'
     start_r2 = f'./vmx.sh --start --cfg config_apstra/r2-apstra.conf'
@@ -221,8 +218,6 @@ def start_vmx():
         print('----- Trying to start R2 again')
 
         subprocess.call(start_r2, shell=True)
-
-
 
     subprocess.call(bind_interfaces, shell=True)
 
@@ -312,17 +307,17 @@ def create_topology():
     print("########################################################## Create Topology")
     clean_memory()
     create_fabric_interface()
-    #create_lab.create_lab_aos()
-    #sleep(10)
-    #create_lab.create_lab_vqfx()
-    #sleep(10)
-    #create_lab.create_lab_vms()
-    #sleep(10)
     create_lab.create_lab_vmx()
-    #sleep(5)
-    #create_lab.configure_vqfx()
-    #sleep(5)
-    #create_lab.configure_vmx()
+    sleep(5)
+    create_lab.create_lab_aos()
+    sleep(10)
+    create_lab.create_lab_vqfx()
+    sleep(10)
+    create_lab.create_lab_vms()
+    sleep(10)
+    create_lab.configure_vqfx()
+    sleep(5)
+    create_lab.configure_vmx()
 
 
 def delete_topology():
@@ -369,10 +364,10 @@ if __name__ == "__main__":
             create_topology()
             run_time = time.time() - start_time
             print("** Time to run: %s sec" % round(run_time, 2))
-            print("- Default vQFX, vMX and Host VMs user and password")
+            print("- Default user and password")
             print("- lab/lab123 and root/juniper123")
         else:
-            print("Stopping the script!!!")
+            print("Wrong option!! Nothing to do!")
             exit()
     elif select_function == '5':
         print("Are you sure you want to delete everything?")
@@ -383,7 +378,7 @@ if __name__ == "__main__":
             run_time = time.time() - start_time
             print("** Time to run: %s sec" % round(run_time, 2))
         else:
-            print("Stopping the script!!!")
+            print("Wrong option!! Nothing to do!")
             exit()
     else:
-        print("Wrong option!! Nothing do to")
+        print("Wrong option!! Nothing to do!")

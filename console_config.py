@@ -1,8 +1,6 @@
 import time
 import logging
 import pexpect
-import os
-
 
 user = "root"
 pwd = "juniper123"
@@ -14,7 +12,6 @@ mgmt_interface_vmx = "fxp0"
 def config_vqfx(hostname, mgmt_ip):
 
     print(f"- Configuring {hostname}")
-
     child = pexpect.spawn(f"virsh console {hostname} --force", timeout=60)
     logging.debug("Got console, Logging in as root")
     child.send("\r")
