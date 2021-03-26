@@ -197,6 +197,8 @@ total 7997348
 -rw-r--r-- 1 root root  762839040 Mar 25 11:08 vqfx-20.2R1-2019010209-pfe-qemu.qcow
 ```
 
+## Cloning jnpr_apstra_kvm project
+
 ```
 root@lab:/home/lab/vmx# cd ..
 
