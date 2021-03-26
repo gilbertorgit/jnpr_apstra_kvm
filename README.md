@@ -50,7 +50,7 @@ This test lab has been built and tested using:
 2. Phisical Server with:
   2.1. 128GB RAM
   2.2. I9 with 14 Cores
-  2.3. 500GB SSD
+  2.3. 500GB - SSD
 3. vQFX 20.2R1.10
 4. vMX 20.4R1.12
 5. Apstra 3.3.0
