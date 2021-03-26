@@ -8,6 +8,8 @@
 
 ![Topology](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/topology_prints/Topology-1.png)
 
+![MGMT IP](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/topology_prints/MGMT-IP.png)
+
 ## Getting Started
 
 This document provides some basic configuration examples for lab purposes only in order to help you get started with the Apstra Intent Based-Networking and Juniper DC using vQFX. 
