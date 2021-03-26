@@ -6,7 +6,7 @@
 
 ## Topology
 
-![alt text](https://github.com/gmr2020git/jnpr_apstra_kvm/tree/main/topology_prints?raw=true)
+![Topology](https://github.com/gmr2020git/jnpr_apstra_kvm/blob/main/topology_prints/Topology-1.png)
 
 ## Getting Started
 
