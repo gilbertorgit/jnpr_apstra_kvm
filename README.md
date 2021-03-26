@@ -211,11 +211,11 @@ root@lab:/home/lab# cd vmx/
 
 ## Python Script 
 
-1 - Start Topology - It will start the entire topology (you have to create it first - Option 4)
-2 - Stop Topology - It will stop the entire topology
-3 - Clean Memory Only - It will clean your server memory
-4 - Create Topology - It will create the entire topology from scratch
-5 - Delete Topology - It will delete and remove the entire topology and images
+1. - Start Topology - It will start the entire topology (you have to create it first - Option 4)
+2. - Stop Topology - It will stop the entire topology
+3. - Clean Memory Only - It will clean your server memory
+4. - Create Topology - It will create the entire topology from scratch
+5. - Delete Topology - It will delete and remove the entire topology and images
 
 ```
 root@lab:/home/lab/vmx#  python3.7 start_stop.py 
