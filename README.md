@@ -246,7 +246,7 @@ Select one Option:
 ***After creating the topology from scratch you will need to configure your Apstra server. Please check the link below and follow the instructions:***
 https://portal.apstra.com/docs/configure_aos.html
 
-# Workaround vMX
+## Workaround vMX
 
 ***If you got an error to start vMX r1 and/or r2 please run the following commands:***
 
