@@ -4,6 +4,10 @@
 
 * **Gilberto Rampini**
 
+## Topology
+
+https://github.com/gmr2020git/jnpr_apstra_kvm/tree/main/topology_prints
+
 ## Getting Started
 
 This document provides some basic configuration examples for lab purposes only in order to help you get started with the Apstra Intent Based-Networking and Juniper DC using vQFX. 
@@ -39,8 +43,7 @@ Important Information
 - Lab Network: 192.168.0.0/24 -> (You can change it by editing the python script)
 - When creating the topology from scratch, you will need to configure your AOS Server: 
   - https://portal.apstra.com/docs/configure_aos.html
-
-
+    
 ## Pre-requisites configs
 
 This test lab has been built and tested using:
