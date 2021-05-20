@@ -2,10 +2,10 @@ import requests
 import json
 from time import sleep
 import base_apstra as ba
-import api_config.templates_data as td
-import api_config.rack_data as rd
-import api_config.logical_data as ld
-import api_config.int_map_data as imd
+import templates_data as td
+import rack_data as rd
+import logical_data as ld
+import int_map_data as imd
 from ipaddress import ip_address
 
 requests.packages.urllib3.disable_warnings()

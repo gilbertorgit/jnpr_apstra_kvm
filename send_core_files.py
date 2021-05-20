@@ -31,7 +31,7 @@ def copy_file_vmx_router():
          print("something went wrong during the file copy")
 
       try:
-         print(f"- Configuring {hostname}")
+         print(f"- Additional configuration - {hostname}")
          child = pexpect.spawn(f"./vmx.sh --console vcp {hostname}", timeout=60)
          logging.debug("Got console, Logging in as root")
          child.send("\r")

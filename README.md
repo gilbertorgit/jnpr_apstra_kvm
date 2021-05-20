@@ -23,11 +23,7 @@ This project will make available:
 1. Python script to create, start, stop and delete the entire topology
 2. All the necessary steps to create a full lab using Apstra and Juniper vQFX and vMX
 3. Python script to create all Apstra configuration is provided in the folder "api_config" 
-4. Alternatively, there is a PDF document providing all steps to configure your entire topology:
-   
-    3.1 If you are a Partner, contact your Juniper Account Manager 
-
-    3.2 If you are an End Customer, contact your Partner
+4. Alternatively, there is a PDF document providing all steps to configure your entire topology. Please see "Apstra_Installation" Folder
 5. MPLS Core configuration
 6. Lab Topology
 
@@ -46,9 +42,9 @@ Important Information
   - root/juniper123 
   - lab/lab123 
 - Lab Network IP and Interface information:
-  - 192.168.122.0/24 -> (You can change it by editing the python script)
+  - 192.168.122.0/24 -> defaul KVM bridge network (You can change it by editing the python script)
   - virbr0 - default KVM bridge interface
-- When creating the topology from scratch, you will need to configure your AOS Server. See "Apstra_Installation" Folder
+- When creating the topology from scratch, you will need to configure your AOS Server. Please see "Apstra_Installation" Folder
   - https://portal.apstra.com/docs/configure_aos.html
     
 ## Pre-requisites configs
@@ -79,7 +75,7 @@ This test lab has been built and tested using:
 lab@lab:~$ su -
 root@lab:~# add-apt-repository ppa:deadsnakes/ppa
 root@lab:~# apt-get -y update
-root@lab:~# apt-get -y install qemu qemu-kvm libvirt-daemon  bridge-utils virt-manager ntp net-tools git python3.7 python3-dev python3-pip python3.7-dev libguestfs-tools
+root@lab:~# apt-get -y install qemu qemu-kvm libvirt-daemon bridge-utils virt-manager ntp net-tools git python3.7 python3-dev python3-pip python3.7-dev libguestfs-tools
 
 
 root@lab:~# python3.7 -m pip install pexpect
@@ -144,19 +140,13 @@ root@lab:~# reboot
 ```
 root@lab:/home/lab# tar -xzvf vmx-bundle-20.4R1.12.tgz
 
-root@lab:/home/lab# cd vmx/
-
-root@lab:/home/lab/vmx# 
-
-root@lab:/home/lab/vmx# cp images/junos-vmx-x86-64-20.4R1.12.qcow2 /var/lib/libvirt/images/junos-vmx-x86-64-20.4R1.12.qcow2
-
-root@lab:/home/lab/vmx# cp images/vmxhdd.img /var/lib/libvirt/images/vmxhdd.img
-
-root@lab:/home/lab/vmx# cp images/vFPC-20201209.img /var/lib/libvirt/images/vFPC-20201209.img
 ```
 ### Download Apstra, Centos GenericCloud, and vQFX Images and copy to vmx/images
 
-***You will have a directory like that one:***
+* root@lab:~# cp <your images>  /home/lab/vmx/images/
+
+***Make sure you download the right version as described in this guide. 
+You will have a directory like that one:***
 
 ```
 root@lab:/home/lab/vmx# ls -l images/
@@ -252,7 +242,9 @@ X11Forwarding yes
 ## Apstra API Configuration Script
 
 ```
-root@lab:/home/lab/vmx#  python3.7 create_config_apstra_api.py
+root@lab:# cd //home/lab/vmx/api_config/
+
+root@server-12b:/home/lab/vmx/api_config# python3.7 create_config_apstra_api.py
 ```
 
 **You can check some scripts output in the folder "Output_Script_Example**
