@@ -6,9 +6,9 @@
 
 ## Topology
 
-![Topology](https://github.com/gilbertorgit/jnpr_apstra_kvm/tree/main/vqfx_dci_3_5_stage/topology_printsTopology-1.png)
+![Topology](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/vqfx_dci_3_5_stage/topology_prints/Topology-1.png)
 
-![MGMT IP](https://github.com/gilbertorgit/jnpr_apstra_kvm/tree/main/vqfx_dci_3_5_stage/topology_prints/MGMT-IP.png)
+![MGMT IP](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/vqfx_dci_3_5_stage/topology_prints/MGMT-IP.png)
 
 ## Getting Started
 
