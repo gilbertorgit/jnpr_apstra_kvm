@@ -170,7 +170,7 @@ def delete_fabric_interface():
     print("---------------------------------------------------------")
     print("--------------------------------------------------------- Delete Bridges")
 
-    print("--------------------------------------------------------- Delete fabric ridges")
+    print("--------------------------------------------------------- Delete fabric Bridges")
     for br_interface in interface_list:
 
 
@@ -181,7 +181,7 @@ def delete_fabric_interface():
 
         print(f'- Deleting Interface {br_interface}')
 
-    print("--------------------------------------------------------- Delete dummy ridges")
+    print("--------------------------------------------------------- Delete dummy Bridges")
 
     for dummy in dummy_interface_list:
 
