@@ -241,6 +241,19 @@ AllowTcpForwarding yes
 X11Forwarding yes
 ```
 
+***SSH Tunnel Example using linux terminal***
+
+```
+ssh -L 8101:192.168.122.180:443 root@<YOUR_SERVER_IP> example:
+ssh -L 8101:192.168.122.180:443 root@192.168.0.1
+```
+
+***SSH Tunnel Example using SecureCRT***
+
+Create a connection to your server and go to "Properties" and configure the relevant parameters, example below:
+
+
+
 ## Apstra API Configuration Script
 
 ```
