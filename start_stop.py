@@ -144,7 +144,7 @@ def create_fabric_interface():
         subprocess.call(cmd_brctl, shell=True)
         subprocess.call(cmd_ifconfig, shell=True)
 
-        lacp_ldp = f'echo 16384 > /sys/class/net/{br_interface}/bridge/group_fwd_mask'
+        lacp_ldp = f'echo 65535 > /sys/class/net/{br_interface}/bridge/group_fwd_mask'
         subprocess.call(lacp_ldp, shell=True)
 
         print(f'- Creating Interface {br_interface}')
@@ -195,53 +195,43 @@ def delete_fabric_interface():
 
 def start_vmx():
 
-    print("########################################################## Start vMX R1 and R2")
-    start_r1 = f'./vmx.sh --start --cfg config_apstra/r1-apstra.conf'
-    start_r2 = f'./vmx.sh --start --cfg config_apstra/r2-apstra.conf'
+    print("########################################################## Start vMX R1 - R8")
+    vmx_hosts = create_lab.create_vmx_dic()
+
+    for i in vmx_hosts.keys():
+        hostname = vmx_hosts[i].get('hostname')
+
+        delete_vmx_router = f'./vmx.sh --start --cfg config_apstra/{hostname}-apstra.conf'
+        subprocess.call(delete_vmx_router, shell=True)
+
     bind_interfaces = f'./vmx.sh --bind-dev --cfg config_apstra/apstra-topology.conf'
-
-    subprocess.call(start_r1, shell=True)
-    subprocess.call(start_r2, shell=True)
-
-    vmx_info = subprocess.Popen("virsh list --all | egrep 'vcp-' | awk '{print $2}'", shell=True,
-                                stdout=subprocess.PIPE).stdout.read().decode('utf-8')
-    # creates list of the vqfx_info and clean the empty spaces
-    li_vmx = list(vmx_info.split("\n"))
-    result = [x for x in li_vmx if x]
-
-    if 'vcp-r1' not in result:
-        print('----- Trying to start R1 again')
-
-        subprocess.call(start_r1, shell=True)
-
-    if 'vcp-r2' not in result:
-        print('----- Trying to start R2 again')
-
-        subprocess.call(start_r2, shell=True)
-
     subprocess.call(bind_interfaces, shell=True)
 
 
 def stop_vmx():
 
-    print("########################################################## Stop vMX R1 and R2")
-    stop_r1 = f'./vmx.sh --stop --cfg config_apstra/r1-apstra.conf'
-    stop_r2 = f'./vmx.sh --stop --cfg config_apstra/r2-apstra.conf'
-    unbind_interfaces = f'./vmx.sh --unbind-dev --cfg config_apstra/apstra-topology.conf'
+    print("########################################################## Stop vMX R1 - R8")
 
-    subprocess.call(stop_r1, shell=True)
-    subprocess.call(stop_r2, shell=True)
+    vmx_hosts = create_lab.create_vmx_dic()
+
+    for i in vmx_hosts.keys():
+        hostname = vmx_hosts[i].get('hostname')
+
+        delete_vmx_router = f'./vmx.sh --stop --cfg config_apstra/{hostname}-apstra.conf'
+        subprocess.call(delete_vmx_router, shell=True)
+
+    unbind_interfaces = f'./vmx.sh --unbind-dev --cfg config_apstra/apstra-topology.conf'
     subprocess.call(unbind_interfaces, shell=True)
 
 
 def start_servers():
 
     print("########################################################## Start Host VMs and Apstra Server")
-    vqfx_list = getting_destroyed_servers()
+    server_list = getting_destroyed_servers()
 
-    for vqfx in vqfx_list:
-        command = f'/usr/bin/virsh start {vqfx}'
-        print(f'- Starting {vqfx}')
+    for server in server_list:
+        command = f'/usr/bin/virsh start {server}'
+        print(f'- Starting {server}')
         subprocess.call(command, shell=True)
         sleep(2)
 
@@ -249,11 +239,11 @@ def start_servers():
 def stop_servers():
 
     print("########################################################## Destroy Servers")
-    vqfx_list = getting_running_servers()
+    server_list = getting_running_servers()
 
-    for vqfx in vqfx_list:
-        command = f'/usr/bin/virsh destroy {vqfx}'
-        print(f'- {vqfx}')
+    for server in server_list:
+        command = f'/usr/bin/virsh destroy {server}'
+        print(f'- {server}')
         subprocess.call(command, shell=True)
         sleep(1)
 
@@ -307,14 +297,14 @@ def create_topology():
     print("########################################################## Create Topology")
     clean_memory()
     create_fabric_interface()
+    create_lab.create_lab_aos()
+    sleep(5)
     create_lab.create_lab_vmx()
     sleep(5)
-    create_lab.create_lab_aos()
-    sleep(10)
     create_lab.create_lab_vqfx()
-    sleep(10)
+    sleep(5)
     create_lab.create_lab_vms()
-    sleep(10)
+    sleep(5)
     create_lab.configure_vqfx()
     sleep(5)
     create_lab.configure_vmx()
@@ -359,7 +349,7 @@ if __name__ == "__main__":
     elif select_function == '4':
         print("Are you sure you want to create a topology from scratch?")
         select_function = input("Type 'yes' or 'no': ").upper() or None
-        if select_function == 'YES' or 'Y' or None:
+        if select_function == 'YES' or None:
             start_time = time.time()
             create_topology()
             run_time = time.time() - start_time
@@ -372,7 +362,7 @@ if __name__ == "__main__":
     elif select_function == '5':
         print("Are you sure you want to delete everything?")
         select_function = input("Type 'yes' or 'no': ").upper() or None
-        if select_function == 'YES' or 'Y' or None:
+        if select_function == 'YES' or None:
             start_time = time.time()
             delete_topology()
             run_time = time.time() - start_time

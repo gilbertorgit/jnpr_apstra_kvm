@@ -22,13 +22,14 @@ This project will make available:
 
 1. Python script to create, start, stop and delete the entire topology
 2. All the necessary steps to create a full lab using Apstra and Juniper vQFX and vMX
-3. Word document providing all steps to configure your entire topology:
+3. Python script to create all Apstra configuration is provided in the folder "api_config" 
+4. Alternatively, there is a PDF document providing all steps to configure your entire topology:
    
     3.1 If you are a Partner, contact your Juniper Account Manager 
 
     3.2 If you are an End Customer, contact your Partner
-4. MPLS Core configuration
-5. Lab Topology
+5. MPLS Core configuration
+6. Lab Topology
 
 Following this guide, you will be able to build
 
@@ -44,8 +45,10 @@ Important Information
 - Default user and password: -> (You can change it by editing the python script)
   - root/juniper123 
   - lab/lab123 
-- Lab Network: 192.168.0.0/24 -> (You can change it by editing the python script)
-- When creating the topology from scratch, you will need to configure your AOS Server: 
+- Lab Network IP and Interface information:
+  - 192.168.122.0/24 -> (You can change it by editing the python script)
+  - virbr0 - default KVM bridge interface
+- When creating the topology from scratch, you will need to configure your AOS Server. See "Apstra_Installation" Folder
   - https://portal.apstra.com/docs/configure_aos.html
     
 ## Pre-requisites configs
@@ -53,10 +56,10 @@ Important Information
 This test lab has been built and tested using:
 
 ```
-1. Ubuntu 16.04
+1. Ubuntu 18.04.5 LTS
 2. Phisical Server with:
   2.1. 128GB RAM
-  2.2. I9 with 14 Cores
+  2.2. I9 with 14 Cores and Intel(R) Xeon(R) CPU E5-2683 v4 @ 2.10GHz
   2.3. 500GB - SSD
 3. vQFX 20.2R1.10
 4. vMX 20.4R1.12
@@ -80,6 +83,9 @@ root@lab:~# apt-get -y install qemu qemu-kvm libvirt-daemon  bridge-utils virt-m
 
 
 root@lab:~# python3.7 -m pip install pexpect
+
+root@lab:~# apt -y install python3-scp
+root@lab:~# apt -y install python3-paramiko
 ```
 
 ```
@@ -109,39 +115,22 @@ root@lab:~# pip install pyyaml
 root@lab:~# pip install netifaces
 ```
 
-Change interface name and configure hugepages
+Configure hugepages
 ```
-root@lab:~# sed -i -e 's/GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX="net.ifnames=0 biosdevname=0 default_hugepagesz=1G hugepagesz=1G hugepages=16G"/' /etc/default/grub
-```
-
-Configure Bridge br0
-
-```
-root@lab:~# vi /etc/network/interfaces
-
-# This file describes the network interfaces available on your system
-# and how to activate them. For more information, see interfaces(5).
-
-source /etc/network/interfaces.d/*
-
-# The loopback network interface
-auto lo
-iface lo inet loopback
-
-# The primary network interface
-
-auto br0
-iface br0 inet static
-      address 192.168.0.199
-      netmask 255.255.255.0
-      network 192.168.0.0
-      gateway 192.168.0.1
-      dns-nameservers 8.8.8.8 8.8.4.4
-      bridge_ports eth0
-      bridge_stp off
-      bridge_maxwait 0
+root@lab:~# sed -i -e 's/GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX="default_hugepagesz=1G hugepagesz=1G hugepages=16G"/' /etc/default/grub
 ```
 
+Change default virbr0 dhcp range from 254 to 100
+```
+root@lab:~# virsh net-edit default
+
+from:
+<range start='192.168.122.2' end='192.168.122.254'/>
+to
+<range start='192.168.122.2' end='192.168.122.100'/>
+```
+
+Update Grub and reboot the server
 ```
 root@lab:~# update-grub
 
@@ -211,7 +200,9 @@ root@lab:/home/lab# cp -rp jnpr_apstra_kvm/* vmx/
 root@lab:/home/lab# cd vmx/
 ```
 
-## Python Script 
+## Python Script
+
+### Create Infrastructure
 
 1. - Start Topology - It will start the entire topology (you have to create it first - Option 4)
 2. - Stop Topology - It will stop the entire topology
@@ -234,25 +225,65 @@ root@lab:/home/lab/vmx#  python3.7 start_stop.py
 Select one Option: 
 ```
 
-## Core vMX R1 and R2 initial configuration
-
-***After creating the topology from scratch you will need to configure your vMX R1 and R2***
-
-1. r1 - check and apply the core1.conf - core_config folder
-2. r2 - check and apply the core2.conf - core_config folder
 
 ## Apstra Server initial configuration
 
-***After creating the topology from scratch you will need to configure your Apstra server. Please check the link below and follow the instructions:***
-https://portal.apstra.com/docs/configure_aos.html
+***After creating the topology from scratch you will need to configure your Apstra server. A
 
-## Workaround vMX
+Access apstra server using console and check the instructions in the folder Apstra_Installation
+```
+root@lab:~# virsh console aos_server_3_3
+```
 
-***If you got an error to start vMX r1 and/or r2 please run the following commands:***
+* If you want to know more, please check the link below for further information:
+  * https://portal.apstra.com/docs/configure_aos.html
+
+***Configure ssh tunnel to access the Apstra UI*** 
+
+* configure your ssh configuration to allow root, TCP and X11 Forwarding
+```
+root@lab:~# vi /etc/ssh/sshd_config
+
+PermitRootLogin yes
+AllowTcpForwarding yes
+X11Forwarding yes
+```
+
+## Apstra API Configuration Script
 
 ```
-./vmx.sh --start --cfg config_apstra/r1-apstra.conf
+root@lab:/home/lab/vmx#  python3.7 create_config_apstra_api.py
+```
 
-./vmx.sh --start --cfg config_apstra/r2-apstra.conf
+**You can check some scripts output in the folder "Output_Script_Example**
+
+## Core vMX R1 and R2 initial configuration
+
+* The pyhon script will configure your core, however in case you have any trouble you can check and apply the configuration
+  * Please check "core_config" folder
+    
+## Workaround vMX
+
+***If you got an error to start any virtual MX, please run the following commands:***
+
+```
+root@lab:/home/lab/vmx# ./vmx.sh --start --cfg config_apstra/r1-apstra.conf
+
+root@lab:/home/lab/vmx# ./vmx.sh --start --cfg config_apstra/r2-apstra.conf
+```
+
+***In case your bond0 (vm_v10_h1) is not working properly, you will need to update the interface configuration***
+```
+root@lab:~# virsh console c1_v10_h1
+
+--> login using root credentials: root/juniper123
+
+[root@c1_v10_h1 ~]#vi /etc/sysconfig/network-scripts/ifcfg-bond0
+
+Add the line below to the end of the file: 
+
+BONDING_OPTS="mode=4 miimon=100 lacp_rate=1"
+
+[root@c1_v10_h1 ~]# shutdown -r now
 ```
 

@@ -1,118 +1,59 @@
 import subprocess
 import time
 import console_config
+import send_core_files
 from time import sleep
 import re
+import os
 
 re_image = '/var/lib/libvirt/images/vqfx-20.2R1.10-re.qcow2'
 pfe_image = '/var/lib/libvirt/images/vqfx-20.2R1.10-pfe.qcow2'
 generic_centos = '/var/lib/libvirt/images/CentOS-7-x86_64-GenericCloud.qcow2'
 image_path = '/var/lib/libvirt/images/'
 
-vqfx_hosts = {'dc1_leaf_1_re': {'hostname' : 'dc1_leaf_1_re','mgmt_ip': '192.168.0.217','mgmt_int': 'br0',
-                             'fabric_int': 'vqfx-int-1', 'dummy_int': 'dummy-int-1', 'xe_0': 'L1', 'xe_1': 'L2',
-                             'xe_2': 'dummy-int-1', 'xe_3': 'dummy-int-1', 'xe_4': 'L29', 'xe_5': 'dummy-int-1',
-                             'xe_6': 'dummy-int-1', 'xe_7': 'dummy-int-1', 'xe_8': 'dummy-int-1',
-                             'xe_9': 'dummy-int-1'},
-              'dc1_leaf_1_pfe': {'hostname': 'dc1_leaf_1_pfe', 'fabric_int': 'vqfx-int-1', 'dummy_int': 'dummy-int-1'},
+aos_vm = {'aos_server_3_3': {'hostname': 'aos_server_3_3', 'eth0': 'virbr0', 'eth1': 'none'},}
 
-              'dc1_leaf_2_re': {'hostname' : 'dc1_leaf_2_re','mgmt_ip': '192.168.0.218','mgmt_int': 'br0',
-                             'fabric_int': 'vqfx-int-2', 'dummy_int': 'dummy-int-2', 'xe_0': 'L3', 'xe_1': 'L4',
-                             'xe_2': 'dummy-int-2', 'xe_3': 'dummy-int-2', 'xe_4': 'L18', 'xe_5': 'L19',
-                             'xe_6': 'dummy-int-2', 'xe_7': 'dummy-int-2', 'xe_8': 'dummy-int-2',
-                             'xe_9': 'dummy-int-2'},
-              'dc1_leaf_2_pfe': {'hostname': 'dc1_leaf_2_pfe', 'fabric_int': 'vqfx-int-2', 'dummy_int': 'dummy-int-2'},
 
-              'dc1_leaf_3_re': {'hostname': 'dc1_leaf_3_re', 'mgmt_ip': '192.168.0.219', 'mgmt_int': 'br0',
-                                'fabric_int': 'vqfx-int-3', 'dummy_int': 'dummy-int-3', 'xe_0': 'L5', 'xe_1': 'L6',
-                                'xe_2': 'dummy-int-3', 'xe_3': 'dummy-int-3', 'xe_4': 'L20', 'xe_5': 'L21',
-                                'xe_6': 'L22', 'xe_7': 'dummy-int-3', 'xe_8': 'dummy-int-3',
-                                'xe_9': 'dummy-int-3'},
-              'dc1_leaf_3_pfe': {'hostname': 'dc1_leaf_3_pfe', 'fabric_int': 'vqfx-int-3', 'dummy_int': 'dummy-int-3'},
+def create_vqfx_dic():
+    fhandle = open('routers_info.csv')
+    hosts=dict()
+    for line in fhandle:
+        words = line.split(',')
+        hosts.update({words[0]: dict()})
+        n = len(words)
+        for i in range(1, n-1, 2):
+            if words[0] in hosts.keys():
+                hosts[words[0]].update({words[i]:words[i+1]})
 
-              'dc1_spine_1_re': {'hostname': 'dc1_spine_1_re', 'mgmt_ip': '192.168.0.215', 'mgmt_int': 'br0',
-                                'fabric_int': 'vqfx-int-4', 'dummy_int': 'dummy-int-4', 'xe_0': 'L7', 'xe_1': 'L1',
-                                'xe_2': 'L3', 'xe_3': 'L5', 'xe_4': 'dummy-int-4', 'xe_5': 'dummy-int-4',
-                                'xe_6': 'dummy-int-4', 'xe_7': 'dummy-int-4', 'xe_8': 'dummy-int-4',
-                                'xe_9': 'dummy-int-4'},
-              'dc1_spine_1_pfe': {'hostname': 'dc1_spine_1_pfe', 'fabric_int': 'vqfx-int-4', 'dummy_int': 'dummy-int-4'},
+    return(hosts)
 
-              'dc1_spine_2_re': {'hostname': 'dc1_spine_2_re', 'mgmt_ip': '192.168.0.216', 'mgmt_int': 'br0',
-                                'fabric_int': 'vqfx-int-5', 'dummy_int': 'dummy-int-5', 'xe_0': 'L8', 'xe_1': 'L2',
-                                'xe_2': 'L4', 'xe_3': 'L6', 'xe_4': 'dummy-int-5', 'xe_5': 'dummy-int-5',
-                                'xe_6': 'dummy-int-5', 'xe_7': 'dummy-int-5', 'xe_8': 'dummy-int-5',
-                                'xe_9': 'dummy-int-5'},
-              'dc1_spine_2_pfe': {'hostname': 'dc1_spine_2_pfe', 'fabric_int': 'vqfx-int-5', 'dummy_int': 'dummy-int-5'},
 
-              'dc1_borderleaf_1_re': {'hostname': 'dc1_borderleaf_1_re', 'mgmt_ip': '192.168.0.225', 'mgmt_int': 'br0',
-                                'fabric_int': 'vqfx-int-6', 'dummy_int': 'dummy-int-6', 'xe_0': 'L7', 'xe_1': 'L8',
-                                'xe_2': 'dummy-int-6', 'xe_3': 'dummy-int-6', 'xe_4': 'dummy-int-6', 'xe_5': 'dummy-int-6',
-                                'xe_6': 'L9', 'xe_7': 'dummy-int-6', 'xe_8': 'dummy-int-6',
-                                'xe_9': 'dummy-int-6'},
-              'dc1_borderleaf_1_pfe': {'hostname': 'dc1_borderleaf_1_pfe', 'fabric_int': 'vqfx-int-6', 'dummy_int': 'dummy-int-6'},
+def create_vmx_dic():
+    fhandle = open('vmx_info.csv')
+    hosts=dict()
+    for line in fhandle:
+        words = line.split(',')
+        hosts.update({words[0]: dict()})
+        n = len(words)
+        for i in range(1, n-1, 2):
+            if words[0] in hosts.keys():
+                hosts[words[0]].update({words[i]:words[i+1]})
 
-              'dc2_leaf_1_re': {'hostname' : 'dc2_leaf_1_re','mgmt_ip': '192.168.0.222','mgmt_int': 'br0',
-                             'fabric_int': 'vqfx-int-7', 'dummy_int': 'dummy-int-7', 'xe_0': 'L12', 'xe_1': 'dummy-int-7',
-                             'xe_2': 'dummy-int-7', 'xe_3': 'dummy-int-7', 'xe_4': 'L23', 'xe_5': 'L24',
-                             'xe_6': 'L25', 'xe_7': 'dummy-int-7', 'xe_8': 'dummy-int-7',
-                             'xe_9': 'dummy-int-7'},
-              'dc2_leaf_1_pfe': {'hostname': 'dc2_leaf_1_pfe', 'fabric_int': 'vqfx-int-7', 'dummy_int': 'dummy-int-7'},
+    return(hosts)
 
-              'dc2_leaf_2_re': {'hostname' : 'dc2_leaf_2_re','mgmt_ip': '192.168.0.223','mgmt_int': 'br0',
-                             'fabric_int': 'vqfx-int-8', 'dummy_int': 'dummy-int-8', 'xe_0': 'L13', 'xe_1': 'dummy-int-8',
-                             'xe_2': 'dummy-int-8', 'xe_3': 'dummy-int-8', 'xe_4': 'L26', 'xe_5': 'L27',
-                             'xe_6': 'L28', 'xe_7': 'dummy-int-8', 'xe_8': 'dummy-int-8',
-                             'xe_9': 'dummy-int-8'},
-              'dc2_leaf_2_pfe': {'hostname': 'dc2_leaf_2_pfe', 'fabric_int': 'vqfx-int-8', 'dummy_int': 'dummy-int-8'},
 
-              'dc2_borderleaf_1_re': {'hostname': 'dc2_borderleaf_1_re', 'mgmt_ip': '192.168.0.226', 'mgmt_int': 'br0',
-                                'fabric_int': 'vqfx-int-9', 'dummy_int': 'dummy-int-9', 'xe_0': 'L11', 'xe_1': 'dummy-int-9',
-                                'xe_2': 'dummy-int-9', 'xe_3': 'dummy-int-9', 'xe_4': 'dummy-int-9', 'xe_5': 'dummy-int-9',
-                                'xe_6': 'L10', 'xe_7': 'dummy-int-9', 'xe_8': 'dummy-int-9',
-                                'xe_9': 'dummy-int-9'},
-              'dc2_borderleaf_1_pfe': {'hostname': 'dc2_borderleaf_1_pfe', 'fabric_int': 'vqfx-int-9', 'dummy_int': 'dummy-int-9'},
+def create_vm_dic():
+    fhandle = open('vm_info.csv')
+    hosts=dict()
+    for line in fhandle:
+        words = line.split(',')
+        hosts.update({words[0]: dict()})
+        n = len(words)
+        for i in range(1, n-1, 2):
+            if words[0] in hosts.keys():
+                hosts[words[0]].update({words[i]:words[i+1]})
 
-              'dc2_borderleaf_2_re': {'hostname': 'dc2_borderleaf_2_re', 'mgmt_ip': '192.168.0.227', 'mgmt_int': 'br0',
-                                'fabric_int': 'vqfx-int-10', 'dummy_int': 'dummy-int-10', 'xe_0': 'L14', 'xe_1': 'dummy-int-10',
-                                'xe_2': 'dummy-int-10', 'xe_3': 'dummy-int-10', 'xe_4': 'dummy-int-10', 'xe_5': 'dummy-int-10',
-                                'xe_6': 'L15', 'xe_7': 'dummy-int-10', 'xe_8': 'dummy-int-10',
-                                'xe_9': 'dummy-int-10'},
-              'dc2_borderleaf_2_pfe': {'hostname': 'dc2_borderleaf_2_pfe', 'fabric_int': 'vqfx-int-10', 'dummy_int': 'dummy-int-10'},
-
-              'dc2_spine_1_re': {'hostname': 'dc2_spine_1_re', 'mgmt_ip': '192.168.0.220', 'mgmt_int': 'br0',
-                                'fabric_int': 'vqfx-int-11', 'dummy_int': 'dummy-int-11', 'xe_0': 'L16', 'xe_1': 'L11',
-                                'xe_2': 'L12', 'xe_3': 'dummy-int-11', 'xe_4': 'dummy-int-11', 'xe_5': 'dummy-int-11',
-                                'xe_6': 'dummy-int-11', 'xe_7': 'dummy-int-11', 'xe_8': 'dummy-int-11',
-                                'xe_9': 'dummy-int-11'},
-              'dc2_spine_1_pfe': {'hostname': 'dc2_spine_1_pfe', 'fabric_int': 'vqfx-int-11', 'dummy_int': 'dummy-int-11'},
-
-              'dc2_spine_2_re': {'hostname': 'dc2_spine_2_re', 'mgmt_ip': '192.168.0.221', 'mgmt_int': 'br0',
-                                'fabric_int': 'vqfx-int-12', 'dummy_int': 'dummy-int-12', 'xe_0': 'L17', 'xe_1': 'L14',
-                                'xe_2': 'L13', 'xe_3': 'dummy-int-12', 'xe_4': 'dummy-int-12', 'xe_5': 'dummy-int-12',
-                                'xe_6': 'dummy-int-12', 'xe_7': 'dummy-int-12', 'xe_8': 'dummy-int-12',
-                                'xe_9': 'dummy-int-12'},
-              'dc2_spine_2_pfe': {'hostname': 'dc2_spine_2_pfe', 'fabric_int': 'vqfx-int-12', 'dummy_int': 'dummy-int-12'},
-
-              'dc2_superspine_1_re': {'hostname': 'dc2_superspine_1_re', 'mgmt_ip': '192.168.0.224', 'mgmt_int': 'br0',
-                                'fabric_int': 'vqfx-int-13', 'dummy_int': 'dummy-int-13', 'xe_0': 'L16', 'xe_1': 'L17',
-                                'xe_2': 'dummy-int-13', 'xe_3': 'dummy-int-13', 'xe_4': 'dummy-int-13', 'xe_5': 'dummy-int-13',
-                                'xe_6': 'dummy-int-13', 'xe_7': 'dummy-int-13', 'xe_8': 'dummy-int-13',
-                                'xe_9': 'dummy-int-13'},
-              'dc2_superspine_1_pfe': {'hostname': 'dc2_superspine_1_pfe', 'fabric_int': 'vqfx-int-13', 'dummy_int': 'dummy-int-13'},
-              }
-
-customer_vm = {'c1_v10_h1': {'hostname': 'c1_v10_h1', 'bond': 'True', 'eth0': 'br0', 'eth1': 'L29', 'eth2': 'L18'},
-              'c1_v10_h2': {'hostname': 'c1_v10_h2', 'bond': 'False', 'eth0': 'br0', 'eth1': 'L20', 'eth2': 'none'},
-              'c1_v10_h4': {'hostname': 'c1_v10_h4', 'bond': 'False', 'eth0': 'br0', 'eth1': 'L23', 'eth2': 'none'},
-              'c1_v10_h6': {'hostname': 'c1_v10_h6', 'bond': 'False', 'eth0': 'br0', 'eth1': 'L26', 'eth2': 'none'},
-              'c1_v20_h3': {'hostname': 'c1_v20_h3', 'bond': 'False', 'eth0': 'br0', 'eth1': 'L21', 'eth2': 'none'},
-              'c1_v20_h5': {'hostname': 'c1_v20_h5', 'bond': 'False', 'eth0': 'br0', 'eth1': 'L24', 'eth2': 'none'},
-              'c1_v20_h7': {'hostname': 'c1_v20_h7', 'bond': 'False', 'eth0': 'br0', 'eth1': 'L27', 'eth2': 'none'},
-              'c1_v30_h8': {'hostname': 'c1_v30_h8', 'bond': 'False', 'eth0': 'br0', 'eth1': 'L28', 'eth2': 'none'},
-              'c2_v100_h1': {'hostname': 'c2_v100_h1', 'bond': 'False', 'eth0': 'br0', 'eth1': 'L19', 'eth2': 'none'},
-              'c2_v200_h2': {'hostname': 'c2_v200_h2', 'bond': 'False', 'eth0': 'br0', 'eth1': 'L22', 'eth2': 'none'},
-              'c2_v200_h3': {'hostname': 'c2_v200_h3', 'bond': 'False', 'eth0': 'br0', 'eth1': 'L25', 'eth2': 'none'},
-              }
+    return(hosts)
 
 
 def create_lab_vqfx():
@@ -128,6 +69,8 @@ def create_lab_vqfx():
 
     subprocess.call(copy_vqf_pfe, shell=True)
     subprocess.call(copy_vqf_re, shell=True)
+
+    vqfx_hosts = create_vqfx_dic()
 
     for i in vqfx_hosts.keys():
 
@@ -157,6 +100,9 @@ def create_lab_vqfx():
             --memory 2048 \
             --vcpus=2 \
             --import \
+            --os-variant generic \
+            --nographics \
+            --noautoconsole \
             --disk path={image_path}{hostname}.qcow2,size=18,device=disk,bus=ide,format=qcow2 \
             --network bridge={mgmt_int},model=e1000 \
             --network bridge={fabric_int},model=e1000 \
@@ -169,10 +115,9 @@ def create_lab_vqfx():
             --network bridge={xe_5},model=e1000 \
             --network bridge={xe_6},model=e1000 \
             --network bridge={xe_7},model=e1000 \
-            --network bridge={xe_8},model=e1000 \
-            --network bridge={xe_9},model=e1000 \
-            --noautoconsole'
-            subprocess.call(install_vqfx_re, shell=True)
+            --network bridge={xe_8},model=e1000'
+
+            subprocess.call(install_vqfx_re, bufsize=2000, shell=True)
         else:
             vqfx_vm = f'cp {pfe_image} {image_path}{hostname}.qcow2'
             subprocess.call(vqfx_vm, shell=True)
@@ -181,11 +126,13 @@ def create_lab_vqfx():
             --memory 2048 \
             --vcpus=2 \
             --import \
+            --os-variant generic \
+            --nographics \
+            --noautoconsole \
             --disk path={image_path}{hostname}.qcow2,size=18,device=disk,bus=ide,format=qcow2 \
             --network bridge={dummy_int},model=e1000 \
-            --network bridge={fabric_int},model=e1000 \
-            --graphics vnc,listen=0.0.0.0 \
-            --noautoconsole'
+            --network bridge={fabric_int},model=e1000'
+
             subprocess.call(install_vqfx_pfe, shell=True)
 
 
@@ -215,6 +162,8 @@ def delete_lab_vqfx():
         subprocess.call(destroy_image, shell=True)
         subprocess.call(undefine_image, shell=True)
 
+    vqfx_hosts = create_vqfx_dic()
+
     for i in vqfx_hosts.keys():
         delete_image = f"rm -f {image_path}{vqfx_hosts[i].get('hostname')}.qcow2"
         subprocess.call(delete_image, shell=True)
@@ -229,6 +178,8 @@ def create_lab_vms():
     copy_cloud_image = f'cp images/CentOS-7-x86_64-GenericCloud.qcow2 /var/lib/libvirt/images/'
     subprocess.call(copy_cloud_image, shell=True)
 
+    customer_vm = create_vm_dic()
+
     for i in customer_vm.keys():
 
         hostname = customer_vm[i].get('hostname')
@@ -239,7 +190,7 @@ def create_lab_vms():
 
         print(f'--------------------------------------------------------- Creating VM {i}')
 
-        create_img = f'qemu-img create -f qcow2 -o preallocation=metadata {image_path}{hostname}.qcow2 20G'
+        create_img = f'qemu-img create -f qcow2 -o preallocation=metadata {image_path}{hostname}.qcow2 15G'
         exapand_img = f'virt-resize --expand /dev/sda1 {generic_centos} {image_path}{hostname}.qcow2'
         add_metadata = f'genisoimage -output {image_path}{hostname}-config.iso -volid cidata ' \
                        f'-joliet -r vm_config/{hostname}/user-data ' \
@@ -298,6 +249,8 @@ def delete_lab_vms():
         subprocess.call(destroy_image, shell=True)
         subprocess.call(undefine_image, shell=True)
 
+    customer_vm = create_vm_dic()
+
     for i in customer_vm.keys():
         delete_image = f"rm -f {image_path}{customer_vm[i].get('hostname')}.qcow2"
         delete_iso = f"rm -f {image_path}{customer_vm[i].get('hostname')}-config.iso"
@@ -311,17 +264,23 @@ def create_lab_aos():
     print("---------------------------------------------------------")
     print("--------------------------------------------------------- Creating AOS Server ")
 
-    copy_aos_image = f'cp images/aos_server_3.3.0.2-46.qcow2 {image_path}aos_server_3_3.qcow2'
+    aos_vm.get('key1', {}).get('key2')
+
+    hostname = aos_vm['aos_server_3_3'].get('hostname')
+    eth0 = aos_vm['aos_server_3_3'].get('eth0')
+    eth1 = aos_vm['aos_server_3_3'].get('eth1')
+
+    copy_aos_image = f'cp images/aos_server_3.3.0.2-46.qcow2 {image_path}{hostname}.qcow2'
     subprocess.call(copy_aos_image, shell=True)
 
-    install_aos = f'virt-install --name=aos_server_3_3 \
+    install_aos = f'virt-install --name={hostname} \
     --vcpu=8 \
-    --ram=16384 \
+    --ram=32768 \
     --import \
-    --disk={image_path}aos_server_3_3.qcow2 \
+    --disk={image_path}{hostname}.qcow2 \
     --os-type=linux --os-variant ubuntu16.04 \
-    --network bridge=br0,model=virtio \
-    --noautoconsole '
+    --network bridge={eth0},model=virtio \
+    --noautoconsole'
 
     subprocess.call(install_aos, shell=True)
 
@@ -364,32 +323,35 @@ def create_lab_vmx():
     subprocess.call(copy_vmx_hdd, shell=True)
     subprocess.call(copy_vmx_fpc, shell=True)
 
-    create_r1 = f'./vmx.sh --start --cfg config_apstra/r1-apstra.conf'
-    create_r2 = f'./vmx.sh --start --cfg config_apstra/r2-apstra.conf'
+    vmx_hosts = create_vmx_dic()
+
+    for i in vmx_hosts.keys():
+        hostname = vmx_hosts[i].get('hostname')
+
+        print(f'--------------------------------------------------------- Creating vMX {i}')
+
+        create_vmx_router = f'./vmx.sh --start --cfg config_apstra/{hostname}-apstra.conf'
+        subprocess.call(create_vmx_router, shell=True)
+        sleep(5)
+
+    for i in vmx_hosts.keys():
+        hostname = vmx_hosts[i].get('hostname')
+        vmx_info = subprocess.Popen("virsh list --all | egrep 'vcp-' | awk '{print $2}'", shell=True,
+                                     stdout=subprocess.PIPE).stdout.read().decode('utf-8')
+        # creates list of the vqfx_info and clean the empty spaces
+        li_vmx = list(vmx_info.split("\n"))
+        result = [x for x in li_vmx if x]
+        print("########################### test vMX ##################################################################")
+        print(result)
+        print(f'vcp-{hostname}')
+        print("########################### test vMX ##################################################################")
+        if f'vcp-{hostname}' not in result:
+            print(f'----- Trying to create {hostname} again')
+
+            subprocess.call(create_vmx_router, shell=True)
+
+
     bind_interfaces = f'./vmx.sh --bind-dev --cfg config_apstra/apstra-topology.conf'
-
-    subprocess.call(create_r1, shell=True)
-    subprocess.call(create_r2, shell=True)
-    sleep(10)
-
-    vmx_info = subprocess.Popen("virsh list --all | egrep 'vcp-' | awk '{print $2}'", shell=True,
-                                 stdout=subprocess.PIPE).stdout.read().decode('utf-8')
-    # creates list of the vqfx_info and clean the empty spaces
-    li_vmx = list(vmx_info.split("\n"))
-    result = [x for x in li_vmx if x]
-    print("########################### test vMX ##################################################################")
-    print(result)
-    print("########################### test vMX ##################################################################")
-    if 'vcp-r1' not in result:
-        print('----- Trying to create R1 again')
-
-        subprocess.call(create_r1, shell=True)
-
-    if 'vcp-r2' not in result:
-        print('----- Trying to create R2 again')
-
-        subprocess.call(create_r2, shell=True)
-
     subprocess.call(bind_interfaces, shell=True)
 
 
@@ -399,21 +361,25 @@ def delete_lab_vmx():
     print("---------------------------------------------------------")
     print("--------------------------------------------------------- Deleting Core MPLS")
 
-    delete_r1 = f'./vmx.sh --cleanup --cfg config_apstra/r1-apstra.conf'
-    delete_r2 = f'./vmx.sh --cleanup --cfg config_apstra/r2-apstra.conf'
+    vmx_hosts = create_vmx_dic()
+
+    for i in vmx_hosts.keys():
+        hostname = vmx_hosts[i].get('hostname')
+
+        delete_vmx_router = f'./vmx.sh --cleanup --cfg config_apstra/{hostname}-apstra.conf'
+        subprocess.call(delete_vmx_router, shell=True)
+
     unbind_interfaces = f'./vmx.sh --unbind-dev --cfg config_apstra/apstra-topology.conf'
-
-    subprocess.call(delete_r1, shell=True)
-    subprocess.call(delete_r2, shell=True)
-    subprocess.call(unbind_interfaces, shell=True)
-
     delete_vmx_re = f'rm -f {image_path}junos-vmx-x86-64-20.4R1.12.qcow2'
     delete_vmx_hdd = f'rm -f {image_path}vmxhdd.img'
     delete_vmx_fpc = f'rm -f  {image_path}vFPC-20201209.img'
+    clean_known_hosts = f'echo "" > ~/.ssh/known_hosts'
 
+    subprocess.call(unbind_interfaces, shell=True)
     subprocess.call(delete_vmx_re, shell=True)
     subprocess.call(delete_vmx_hdd, shell=True)
     subprocess.call(delete_vmx_fpc, shell=True)
+    subprocess.call(clean_known_hosts, shell=True)
 
 
 def configure_vqfx():
@@ -425,6 +391,9 @@ def configure_vqfx():
     print("** Time waiting: %s sec" % round(run_time, 2))
     sleep(5)
     print("Send hostname e ip")
+
+    vqfx_hosts = create_vqfx_dic()
+
     for i in vqfx_hosts.keys():
         hostname = vqfx_hosts[i].get('hostname')
         mgmt_ip = vqfx_hosts[i].get('mgmt_ip')
@@ -435,10 +404,17 @@ def configure_vqfx():
 
 def configure_vmx():
 
-    print("We will wait around 1 minute to start the initial vMX(R1 and R2) basic configuration")
+    print("We will wait around 1 minute to start the initial vMX CORE basic configuration")
     sleep(60)
 
-    print("Sending r1 and 192.168.0.176 to configure basic access")
-    console_config.config_vmx('r1', '192.168.0.176')
-    print("Sending  r2 and 192.168.0.177 to configure basic access")
-    console_config.config_vmx('r2', '192.168.0.177')
+    vmx_hosts = create_vmx_dic()
+
+    for i in vmx_hosts.keys():
+        hostname = vmx_hosts[i].get('hostname')
+        mgmt_ip = vmx_hosts[i].get('mgmt_ip')
+
+        print(f"Sending {hostname} and {mgmt_ip} to configure basic access")
+        console_config.config_vmx(hostname, mgmt_ip)
+
+    sleep(10)
+    send_core_files.copy_file_vmx_router()

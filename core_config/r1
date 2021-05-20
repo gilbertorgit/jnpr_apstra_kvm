@@ -1,19 +1,7 @@
-set system host-name CORE1
-set system root-authentication encrypted-password "$6$P4v5CKUl$WTJVRraQ3QNO1s7lhO182NVmzjOFtAGZOhuBHCwjhH2gTVW952pUU3wxb5iYapDZr9zbnpi1umvCdysJ3NHtX1"
-set system login user lab uid 2000
-set system login user lab class super-user
-set system login user lab authentication encrypted-password "$6$oNuWEXRH$ZHRtAyHtjKbtX9q853kcMOo0gIR/RDbmwOXInu24j8.yMg2vlEMhhBhCfJ3rIf8eIuWqXtJ1N5yfzN96DJkc90"
-set system services ssh root-login allow
-set system services netconf ssh
-set system syslog file messages any notice
-set system syslog file messages authorization info
-set system syslog file interactive-commands interactive-commands any
-set chassis fpc 0 lite-mode
 set interfaces ge-0/0/0 unit 0 family inet address 30.0.0.0/31
 set interfaces ge-0/0/0 unit 0 family iso
 set interfaces ge-0/0/0 unit 0 family mpls
 set interfaces ge-0/0/6 unit 0 family inet address 10.1.1.1/31
-set interfaces fxp0 unit 0 family inet address 192.168.0.176/24
 set interfaces lo0 unit 0 family inet address 100.100.3.1/32
 set interfaces lo0 unit 0 family iso address 42.1001.0000.3001.00
 set interfaces lo0 unit 1 family inet address 100.100.11.1/32

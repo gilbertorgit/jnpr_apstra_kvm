@@ -128,6 +128,7 @@ def config_vmx(hostname, mgmt_ip):
     logging.debug("Turning on netconf and ssh")
     child.sendline("set system services netconf ssh")
     child.sendline("set system services ssh")
+    child.sendline("set system services ssh root-login allow")
     child.sendline("delete interfaces")
     time.sleep(.5)
     logging.debug(f"Configuring hostname default to /24 for now!!!")
