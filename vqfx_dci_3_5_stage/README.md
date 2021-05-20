@@ -252,7 +252,9 @@ ssh -L 8101:192.168.122.180:443 root@192.168.0.1
 
 Create a connection to your server and go to "Properties" and configure the relevant parameters, example below:
 
+![SecureCRT](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/vqfx_dci_3_5_stage/topology_prints/SecureCRT-1.png)
 
+![SecureCRT](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/vqfx_dci_3_5_stage/topology_prints/SecureCRT-2.png)
 
 ## Apstra API Configuration Script
 
