@@ -258,6 +258,7 @@ Create a connection to your server and go to "Properties" and configure the rele
 
 ## Apstra API Configuration Script
 
+* The script below will configure the entire topology using APIs
 ```
 root@lab:# cd //home/lab/vmx/api_config/
 
