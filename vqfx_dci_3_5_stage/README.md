@@ -6,9 +6,9 @@
 
 ## Topology
 
-![Topology](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/topology_prints/Topology-1.png)
+![Topology](https://github.com/gilbertorgit/jnpr_apstra_kvm/tree/main/vqfx_dci_3_5_stage/topology_printsTopology-1.png)
 
-![MGMT IP](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/topology_prints/MGMT-IP.png)
+![MGMT IP](https://github.com/gilbertorgit/jnpr_apstra_kvm/tree/main/vqfx_dci_3_5_stage/topology_prints/MGMT-IP.png)
 
 ## Getting Started
 
@@ -187,7 +187,7 @@ root@lab:/home/lab/vmx# cd ..
 
 root@lab:/home/lab# git clone https://github.com/gmr2020git/jnpr_apstra_kvm.git
 
-root@lab:/home/lab# cp -rp jnpr_apstra_kvm/* vmx/
+root@lab:/home/lab# cp -rp jnpr_apstra_kvm/vqfx_dci_3_5_stage/* vmx/
 
 root@lab:/home/lab# cd vmx/
 ```
