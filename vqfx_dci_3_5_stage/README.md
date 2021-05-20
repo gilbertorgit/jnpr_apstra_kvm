@@ -23,9 +23,9 @@ This project will make available:
 1. Python script to create, start, stop and delete the entire topology
 2. All the necessary steps to create a full lab using Apstra and Juniper vQFX and vMX
 3. Python script to create all Apstra configuration is provided in the folder "api_config" 
-4. Alternatively, there is a PDF document providing all steps to configure your entire topology.
-
-    4.1 Please see "Apstra_Installation" Folder
+4. Alternatively, there is a PDF document providing all steps to configure your entire topology
+   1. If you are a Partner, contact your account manager to have access
+   2. If you are an end customer, contact your partner to have access
 5. MPLS Core configuration
 6. Lab Topology
 
