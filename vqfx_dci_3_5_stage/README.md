@@ -260,7 +260,7 @@ Create a connection to your server and go to "Properties" and configure the rele
 
 * The script below will configure the entire topology using APIs
 ```
-root@lab:# cd //home/lab/vmx/api_config/
+root@lab:# cd /home/lab/vmx/api_config/
 
 root@server-12b:/home/lab/vmx/api_config# python3.7 create_config_apstra_api.py
 ```
