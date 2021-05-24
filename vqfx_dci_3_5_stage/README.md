@@ -272,7 +272,7 @@ root@server-12b:/home/lab/vmx/api_config# python3.7 create_config_apstra_api.py
     
 ## Workaround vMX
 
-***If you got an error to start any virtual MX, please run the following commands:***
+***If you face any error to start any virtual MX, please run the following commands:***
 
 ```
 root@lab:/home/lab/vmx# ./vmx.sh --start --cfg config_apstra/r1-apstra.conf
