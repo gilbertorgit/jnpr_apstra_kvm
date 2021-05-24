@@ -151,7 +151,7 @@ root@lab:/home/lab# tar -xzvf vmx-bundle-20.4R1.12.tgz
 You will have a directory like that one:***
 
 ```
-root@lab:/home/lab/vmx# ls -l images/
+root@lab:/home/lab/vmx# ls -l /home/lab/vmx/images/
 total 7997348
 -rw-r--r-- 1 root root 1951413760 Mar 25 11:07 aos_server_3.3.0.2-46.qcow2
 -rw-r--r-- 1 root root  858783744 Mar 25 11:08 CentOS-7-x86_64-GenericCloud.qcow2
@@ -183,8 +183,6 @@ total 7997348
 ## Cloning jnpr_apstra_kvm project
 
 ```
-root@lab:/home/lab/vmx# cd ..
-
 root@lab:/home/lab# git clone https://github.com/gmr2020git/jnpr_apstra_kvm.git
 
 root@lab:/home/lab# cp -rp jnpr_apstra_kvm/vqfx_dci_3_5_stage/* vmx/
@@ -203,7 +201,7 @@ root@lab:/home/lab# cd vmx/
 5. - Delete Topology - It will delete and remove the entire topology and images
 
 ```
-root@lab:/home/lab/vmx#  python3.7 start_stop.py 
+root@lab:/home/lab/vmx# python3.7 start_stop.py 
 1 - Start Topology
 
 2 - Stop Topology
