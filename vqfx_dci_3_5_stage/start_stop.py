@@ -1,3 +1,9 @@
+"""
+---------------------------------
+ Author: Gilberto Rampini
+ Date: 05/2021
+---------------------------------
+"""
 import subprocess
 from time import sleep
 import create_lab
@@ -6,7 +12,9 @@ import time
 
 def clean_memory():
 
-    """Clean linux memory"""
+    """
+    Clean linux memory
+    """
     print("---------------------------------------------------------")
     print("---------------------------------------------------------")
     print("--------------------------------------------------------- Clean Memory")

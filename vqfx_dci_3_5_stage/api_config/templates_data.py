@@ -1,3 +1,10 @@
+"""
+---------------------------------
+ Author: Gilberto Rampini
+ Date: 05/2021
+---------------------------------
+"""
+
 data_JNPR_3_STAGE_TEMPLATE = f'''{{
   "external_routing_policy": {{
     "export_policy": {{

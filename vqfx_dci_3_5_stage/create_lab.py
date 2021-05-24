@@ -1,3 +1,9 @@
+"""
+---------------------------------
+ Author: Gilberto Rampini
+ Date: 05/2021
+---------------------------------
+"""
 import subprocess
 import time
 import console_config
@@ -29,6 +35,7 @@ def create_vqfx_dic():
 
 
 def create_vmx_dic():
+
     fhandle = open('vmx_info.csv')
     hosts=dict()
     for line in fhandle:
@@ -43,6 +50,7 @@ def create_vmx_dic():
 
 
 def create_vm_dic():
+
     fhandle = open('vm_info.csv')
     hosts=dict()
     for line in fhandle:
@@ -349,7 +357,6 @@ def create_lab_vmx():
             print(f'----- Trying to create {hostname} again')
 
             subprocess.call(create_vmx_router, shell=True)
-
 
     bind_interfaces = f'./vmx.sh --bind-dev --cfg config_apstra/apstra-topology.conf'
     subprocess.call(bind_interfaces, shell=True)
