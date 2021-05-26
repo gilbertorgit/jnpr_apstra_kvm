@@ -145,6 +145,14 @@ root@lab:/home/lab# tar -xzvf vmx-bundle-20.4R1.12.tgz
 ```
 ### Download Apstra, Centos GenericCloud, and vQFX Images and copy to vmx/images
 
+* Apstra - https://support.juniper.net/support/downloads/?p=apstra-fabric-conductor
+
+* CentOS-7-x86_64-GenericCloud.qcow2 - https://cloud.centos.org/centos/7/images/
+
+* vQFX - https://support.juniper.net/support/downloads/?p=vqfx-evaluation - Download as showed below:
+![vQFX-Download](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/vqfx_dci_3_5_stage/topology_prints/vQFX-Download.png)
+
+
 * root@lab:~# cp <your images>  /home/lab/vmx/images/
 
 ***Make sure you download the right version as described in this guide. 
