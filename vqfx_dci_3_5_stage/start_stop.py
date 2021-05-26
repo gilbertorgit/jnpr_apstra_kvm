@@ -343,17 +343,20 @@ if __name__ == "__main__":
         start_time = time.time()
         start_topology()
         run_time = time.time() - start_time
-        print("** Time to run: %s sec" % round(run_time, 2))
+        run_time_min = run_time / 60
+        print(f'Time to configure: {run_time_min}')
     elif select_function == '2':
         start_time = time.time()
         stop_topology()
         run_time = time.time() - start_time
-        print("** Time to run: %s sec" % round(run_time, 2))
+        run_time_min = run_time / 60
+        print(f'Time to configure: {run_time_min}')
     elif select_function == '3':
         start_time = time.time()
         clean_memory()
         run_time = time.time() - start_time
-        print("** Time to run: %s sec" % round(run_time, 2))
+        run_time_min = run_time / 60
+        print(f'Time to configure: {run_time_min}')
     elif select_function == '4':
         print("Are you sure you want to create a topology from scratch?")
         select_function = input("Type 'yes' or 'no': ").upper() or None
@@ -361,7 +364,8 @@ if __name__ == "__main__":
             start_time = time.time()
             create_topology()
             run_time = time.time() - start_time
-            print("** Time to run: %s sec" % round(run_time, 2))
+            run_time_min = run_time / 60
+            print(f'Time to configure: {run_time_min}')
             print("- Default user and password")
             print("- lab/lab123 and root/juniper123")
         else:
