@@ -1,5 +1,4 @@
 version: 2
-
 ethernets:
   eth0:
     dhcp4: true
@@ -12,12 +11,11 @@ bonds:
     interfaces: [eth1, eth2]
     addresses:
       - 192.168.10.11/24
-    mode: 802.3ad
-    lacp-rate: fast
     routes:
-      - to: 192.168.10.0/24
-        via: 192.168.10.1
       - to: 192.168.20.0/24
         via: 192.168.10.1
       - to: 192.168.30.0/24
         via: 192.168.10.1
+    parameters:
+        mode: 802.3ad
+        lacp-rate: fast
