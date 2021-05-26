@@ -152,7 +152,7 @@ def create_fabric_interface():
         subprocess.call(cmd_brctl, shell=True)
         subprocess.call(cmd_ifconfig, shell=True)
 
-        lacp_ldp = f'echo 65535 > /sys/class/net/{br_interface}/bridge/group_fwd_mask'
+        lacp_ldp = f'echo 16384 > /sys/class/net/{br_interface}/bridge/group_fwd_mask'
         subprocess.call(lacp_ldp, shell=True)
 
         print(f'- Creating Interface {br_interface}')
@@ -374,7 +374,8 @@ if __name__ == "__main__":
             start_time = time.time()
             delete_topology()
             run_time = time.time() - start_time
-            print("** Time to run: %s sec" % round(run_time, 2))
+            run_time_min = run_time / 60
+            print(f'Time to configure: {run_time_min}')
         else:
             print("Wrong option!! Nothing to do!")
             exit()
