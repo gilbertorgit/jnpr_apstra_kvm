@@ -193,7 +193,7 @@ total 7997348
 ```
 root@lab:/home/lab# git clone https://github.com/gmr2020git/jnpr_apstra_kvm.git
 
-root@lab:/home/lab# cp -rp jnpr_apstra_kvm/vqfx_dci_3_5_stage/* vmx/
+root@lab:/home/lab# mv jnpr_apstra_kvm/Apstra_4_0/dci_3_5_stage/* vmx/
 
 root@lab:/home/lab# cd vmx/
 ```
