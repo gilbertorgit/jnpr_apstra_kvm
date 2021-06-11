@@ -1,7 +1,7 @@
 """
 ---------------------------------
  Author: Gilberto Rampini
- Date: 05/2021
+ Date: 06/2021
 ---------------------------------
 """
 import requests
@@ -23,12 +23,6 @@ requests.packages.urllib3.disable_warnings()
 --------------------------------------------------------------------------------------------------------
 Basic Apstra configura, resources, etc.
 """
-
-
-def create_ip_list(start, end):
-    start_int = int(ip_address(start).packed.hex(), 16)
-    end_int = int(ip_address(end).packed.hex(), 16)
-    return [ip_address(ip).exploded for ip in range(start_int, end_int)]
 
 
 def create_asn_pool(asn_name, asn_first, asn_last):
@@ -86,21 +80,11 @@ def create_ip_pool(ip_name, ip_network):
     return response
 
 
-def create_external_router(router_name, loopback_address, asn):
+def create_ip_list(start, end):
 
-    print(f'--------------------Creating External Router: {router_name} network: {loopback_address} asn: {asn}')
-
-    url = f'{url_ba.apstra_url}{url_ba.external_router}'
-
-    data = f''' {{
-    "display_name": "{router_name}",
-    "asn": "{asn}",
-    "address": "{loopback_address}",
-    "id": "{router_name}"
-    }}'''
-
-    response = ba.apstra_post(url=url, data=data)
-    return response
+    start_int = int(ip_address(start).packed.hex(), 16)
+    end_int = int(ip_address(end).packed.hex(), 16)
+    return [ip_address(ip).exploded for ip in range(start_int, end_int)]
 
 
 def create_offbox_device(start_ip, end_ip, username=f'lab', password=f'lab123', platform=f'junos',
@@ -109,7 +93,7 @@ def create_offbox_device(start_ip, end_ip, username=f'lab', password=f'lab123', 
     print(f'--------------------Creating Offbox Devices')
     url = f'{url_ba.apstra_url}{url_ba.system_gent_url}'
 
-    mgmt_list = create_ip_list(start_ip,end_ip)
+    mgmt_list = create_ip_list(start_ip, end_ip)
     response_list = []
     for ip in mgmt_list:
         print(f'--------------------Creating offbox device: {ip}')
