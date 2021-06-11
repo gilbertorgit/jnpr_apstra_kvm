@@ -6,6 +6,6 @@
 
 ## Getting Started
 
-This repository provides some basic automation scripts to build your own virtual Data Centre using Apstra and vQFX on KVM. 
+This repository provides some basic automation scripts to build your own Juniper topologies using Apstra, vQFX, and vMX on KVM. 
 
-1. For DCI example go to "vqfx_dci_3_5_stage" folder and follow the instructions. 
+1. Go to the specifics folder and follow the instructions! Enjoy!

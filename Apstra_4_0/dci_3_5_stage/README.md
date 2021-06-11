@@ -6,9 +6,9 @@
 
 ## Topology
 
-![Topology](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/vqfx_dci_3_5_stage/topology_prints/Topology-1.png)
+![Topology](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/Apstra_4_0/dci_3_5_stage/topology_prints/Topology-1.png)
 
-![MGMT IP](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/vqfx_dci_3_5_stage/topology_prints/MGMT-IP.png)
+![MGMT IP](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/Apstra_4_0/dci_3_5_stage/topology_prints/MGMT-IP.png)
 
 ## Getting Started
 
@@ -150,7 +150,7 @@ root@lab:/home/lab# tar -xzvf vmx-bundle-20.4R1.12.tgz
 * CentOS-7-x86_64-GenericCloud.qcow2 - https://cloud.centos.org/centos/7/images/
 
 * vQFX - https://support.juniper.net/support/downloads/?p=vqfx-evaluation - Download as showed below:
-![vQFX-Download](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/vqfx_dci_3_5_stage/topology_prints/vQFX-Download.png)
+![vQFX-Download](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/Apstra_4_0/dci_3_5_stage/topology_prints/vQFX-Download.png)
 
 
 * root@lab:~# cp <your images>  /home/lab/vmx/images/
@@ -258,9 +258,9 @@ ssh -L 8101:192.168.122.180:443 root@192.168.0.1
 
 Create a connection to your server and go to "Properties" and configure the relevant parameters, example below:
 
-![SecureCRT](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/vqfx_dci_3_5_stage/topology_prints/SecureCRT-1.png)
+![SecureCRT](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/Apstra_4_0/dci_3_5_stage/topology_prints/SecureCRT-1.png)
 
-![SecureCRT](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/vqfx_dci_3_5_stage/topology_prints/SecureCRT-2.png)
+![SecureCRT](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/Apstra_4_0/dci_3_5_stage/topology_prints/SecureCRT-2.png)
 
 ## Apstra API Configuration Script
 
