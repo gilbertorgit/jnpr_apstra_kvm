@@ -68,7 +68,7 @@ def get_blueprint_device_id(blueprint_name):
     """
     url = f"{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}/experience/web/cabling-map"
     id_list=[]
-    response = ba.apstra_get(url=url)
+    response = apstra_get(url=url)
 
     for id in response.json()['links']:
         id=id['endpoints']
@@ -83,7 +83,7 @@ def get_blueprint_all_info(blueprint_name):
     get all bluprint info
     """
     url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}'
-    response = ba.apstra_get(url=url)
+    response = apstra_get(url=url)
     return response
 
 
@@ -108,7 +108,7 @@ def get_deploy_version(blueprint_name):
     get version to commit
     """
     url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_version_url}'
-    response = ba.apstra_get(url=url)
+    response = apstra_get(url=url)
     return response.json()['staging_version']
 
 
@@ -117,7 +117,7 @@ def get_system_info():
     get all system ids
     """
     url = f'{url_ba.apstra_url}{url_ba.systems_url}'
-    response = ba.apstra_get(url=url)
+    response = apstra_get(url=url)
     return response
 
 
