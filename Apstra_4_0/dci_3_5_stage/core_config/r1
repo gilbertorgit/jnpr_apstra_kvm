@@ -20,15 +20,12 @@ set policy-options policy-statement vrf-dc1-import term 1 then accept
 set policy-options policy-statement vrf-dc1-import term 2 then reject
 set policy-options community dc1 members target:65002:1
 set routing-instances dci routing-options static route 0.0.0.0/0 discard
-set routing-instances dci routing-options static route 10.20.30.0/32 next-hop 10.1.1.0
 set routing-instances dci protocols bgp group dc type external
 set routing-instances dci protocols bgp group dc multihop ttl 10
-set routing-instances dci protocols bgp group dc local-address 100.100.11.1
-set routing-instances dci protocols bgp group dc neighbor 10.20.30.0 peer-as 102
+set routing-instances dci protocols bgp group dc neighbor 10.1.1.0 peer-as 102
 set routing-instances dci protocols bgp export advertise-default
 set routing-instances dci instance-type vrf
 set routing-instances dci interface ge-0/0/6.0
-set routing-instances dci interface ge-0/0/7.0
 set routing-instances dci interface lo0.1
 set routing-instances dci route-distinguisher 100.100.3.1:1
 set routing-instances dci vrf-import vrf-dc1-import

@@ -58,18 +58,15 @@ set policy-options community dc1 members target:65002:1
 set policy-options community dc2-bl1 members 203:1
 set policy-options community dc2-bl2 members 205:1
 set routing-instances dci routing-options static route 0.0.0.0/0 discard
-set routing-instances dci routing-options static route 20.20.30.0/32 next-hop 20.2.2.0
-set routing-instances dci routing-options static route 20.20.30.2/32 next-hop 20.2.2.2
 set routing-instances dci protocols bgp group dc type external
 set routing-instances dci protocols bgp group dc multihop ttl 10
-set routing-instances dci protocols bgp group dc local-address 100.100.12.1
 set routing-instances dci protocols bgp group dc multipath multiple-as
-set routing-instances dci protocols bgp group dc neighbor 20.20.30.0 import dc2-bl1-import
-set routing-instances dci protocols bgp group dc neighbor 20.20.30.0 export dc2-bl1-export
-set routing-instances dci protocols bgp group dc neighbor 20.20.30.0 peer-as 203
-set routing-instances dci protocols bgp group dc neighbor 20.20.30.2 import dc2-bl2-import
-set routing-instances dci protocols bgp group dc neighbor 20.20.30.2 export dc2-bl2-export
-set routing-instances dci protocols bgp group dc neighbor 20.20.30.2 peer-as 205
+set routing-instances dci protocols bgp group dc neighbor 20.2.2.0 import dc2-bl1-import
+set routing-instances dci protocols bgp group dc neighbor 20.2.2.0 export dc2-bl1-export
+set routing-instances dci protocols bgp group dc neighbor 20.2.2.0 peer-as 203
+set routing-instances dci protocols bgp group dc neighbor 20.2.2.2 import dc2-bl2-import
+set routing-instances dci protocols bgp group dc neighbor 20.2.2.2 export dc2-bl2-export
+set routing-instances dci protocols bgp group dc neighbor 20.2.2.2 peer-as 205
 set routing-instances dci instance-type vrf
 set routing-instances dci interface ge-0/0/6.0
 set routing-instances dci interface ge-0/0/7.0

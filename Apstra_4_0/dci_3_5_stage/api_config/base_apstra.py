@@ -55,6 +55,72 @@ GETs
 """
 
 
+def get_asn_pool():
+
+    headers = {'Content-Type':'application/json', 'Cache-Control':'no-cache', 'AUTHTOKEN': get_token()}
+    asn_pool_resp = requests.get(f'{url_ba.apstra_url}{url_ba.asn_pool_url}', headers=headers, verify=False)
+
+
+def get_blueprint_device_id(blueprint_name):
+
+    """
+    Get the default device ID in the blueprint. We need this to configure the right device profile
+    """
+    url = f"{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}/experience/web/cabling-map"
+    id_list=[]
+    response = ba.apstra_get(url=url)
+
+    for id in response.json()['links']:
+        id=id['endpoints']
+        for value in id:
+            id_list.append(value['system'])
+    return id_list
+
+
+def get_blueprint_all_info(blueprint_name):
+
+    """
+    get all bluprint info
+    """
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}'
+    response = ba.apstra_get(url=url)
+    return response
+
+
+def get_blueprint_virtual_network(blueprint_name, vlan_name):
+
+    """
+    GET VIRTUAL NETWORK ID
+    """
+    virtual_network_url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.get_blueprint_virtual_networks}'
+    virtual_network_response = ba.apstra_get(url=virtual_network_url)
+    virtual_network_response_json = virtual_network_response.json()
+    for key, value in virtual_network_response_json['virtual_networks'].items():
+        if value['label'] == vlan_name:
+            vn_id = key
+
+    return vn_id
+
+
+def get_deploy_version(blueprint_name):
+
+    """
+    get version to commit
+    """
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_version_url}'
+    response = ba.apstra_get(url=url)
+    return response.json()['staging_version']
+
+
+def get_system_info():
+    """
+    get all system ids
+    """
+    url = f'{url_ba.apstra_url}{url_ba.systems_url}'
+    response = ba.apstra_get(url=url)
+    return response
+
+
 def get_security_zone(blueprint_name):
 
     """

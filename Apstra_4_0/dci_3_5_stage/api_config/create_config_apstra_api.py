@@ -21,48 +21,6 @@ requests.packages.urllib3.disable_warnings()
 
 """
 --------------------------------------------------------------------------------------------------------
-Basic GET, PUT, Token etc.
-"""
-
-
-def get_token():
-
-    data = {'username': url_ba.username, 'password': url_ba.password}
-    auth_resp = requests.post(f'{url_ba.apstra_url}{url_ba.login_url}', data=json.dumps(data), verify=False)
-
-    return auth_resp.json()['token']
-
-
-def apstra_get(url):
-
-    headers = {'Content-Type': 'application/json', 'Cache-Control': 'no-cache', 'AUTHTOKEN': get_token()}
-    response = requests.get(url, headers=headers, verify=False)
-    return response
-
-
-def apstra_post(url, data):
-
-    headers = {'Content-Type': 'application/json', 'Cache-Control': 'no-cache', 'AUTHTOKEN': get_token()}
-    response = requests.post(url, data=data, headers=headers, verify=False)
-    return response
-
-
-def apstra_put(url, data):
-
-    headers = {'Content-Type': 'application/json', 'Cache-Control': 'no-cache', 'AUTHTOKEN': get_token()}
-    response = requests.put(url, data=data, headers=headers, verify=False)
-    return response
-
-
-def apstra_patch(url, data):
-
-    headers = {'Content-Type': 'application/json', 'Cache-Control': 'no-cache', 'AUTHTOKEN': get_token()}
-    response = requests.patch(url, data=data, headers=headers, verify=False)
-    return response
-
-
-"""
---------------------------------------------------------------------------------------------------------
 Basic Apstra configura, resources, etc.
 """
 
@@ -71,12 +29,6 @@ def create_ip_list(start, end):
     start_int = int(ip_address(start).packed.hex(), 16)
     end_int = int(ip_address(end).packed.hex(), 16)
     return [ip_address(ip).exploded for ip in range(start_int, end_int)]
-
-
-def get_asn_pool():
-
-    headers = {'Content-Type':'application/json', 'Cache-Control':'no-cache', 'AUTHTOKEN': get_token()}
-    asn_pool_resp = requests.get(f'{url_ba.apstra_url}{url_ba.asn_pool_url}', headers=headers, verify=False)
 
 
 def create_asn_pool(asn_name, asn_first, asn_last):
@@ -94,7 +46,7 @@ def create_asn_pool(asn_name, asn_first, asn_last):
         ]
         }}'''
 
-        response = apstra_post(url=url, data=data)
+        response = ba.apstra_post(url=url, data=data)
         return response
 
 
@@ -114,7 +66,7 @@ def create_vni_pool(vni_name, vni_first, vni_last):
     "id": "{vni_name}"
     }}'''
 
-    response = apstra_post(url=url, data=data)
+    response = ba.apstra_post(url=url, data=data)
     return response
 
 
@@ -130,7 +82,7 @@ def create_ip_pool(ip_name, ip_network):
     "id": "{ip_name}"
     }}'''
 
-    response = apstra_post(url=url, data=data)
+    response = ba.apstra_post(url=url, data=data)
     return response
 
 
@@ -147,7 +99,7 @@ def create_external_router(router_name, loopback_address, asn):
     "id": "{router_name}"
     }}'''
 
-    response = apstra_post(url=url, data=data)
+    response = ba.apstra_post(url=url, data=data)
     return response
 
 
@@ -170,7 +122,7 @@ def create_offbox_device(start_ip, end_ip, username=f'lab', password=f'lab123', 
         "agent_type": "{agent_type}",
         "operation_mode": "{operation_mode}"
         }}'''
-        response = apstra_post(url=url, data=data)
+        response = ba.apstra_post(url=url, data=data)
         response_list.append(response)
         sleep(2)
     return response_list
@@ -188,14 +140,14 @@ def manage_device(system_id, model):
     }}
     }}
     }}'''
-    response = apstra_post(url=url, data=data)
+    response = ba.apstra_post(url=url, data=data)
     return response
 
 
 def manage_device_all():
 
     device_list_url = f'{url_ba.apstra_url}{url_ba.systems_url}'
-    device_list_response = apstra_get(device_list_url).json()
+    device_list_response = ba.apstra_get(device_list_url).json()
 
     device_list_all = []
 
@@ -217,7 +169,7 @@ def create_logical_device(data):
 
     url = f'{url_ba.apstra_url}{url_ba.logical_device_design_url}'
     data = data
-    response = apstra_post(url=url, data=data)
+    response = ba.apstra_post(url=url, data=data)
     return response
 
 
@@ -227,7 +179,7 @@ def create_interface_map(data):
 
     url = f'{url_ba.apstra_url}{url_ba.interface_maps_url}'
     data = data
-    response = apstra_post(url=url, data=data)
+    response = ba.apstra_post(url=url, data=data)
     return response
 
 
@@ -237,7 +189,7 @@ def create_rack_type(data):
 
     url = f'{url_ba.apstra_url}{url_ba.rack_design_url}'
     data = data
-    response = apstra_post(url=url, data=data)
+    response = ba.apstra_post(url=url, data=data)
     return response
 
 
@@ -247,7 +199,7 @@ def create_template(data):
 
     url = f'{url_ba.apstra_url}{url_ba.template_design_url}'
     data = data
-    response = apstra_post(url=url, data=data)
+    response = ba.apstra_post(url=url, data=data)
     return response
 
 
@@ -264,7 +216,7 @@ def create_blueprint(blueprint_name, template_name):
         "template_id":"{template_name}", 
         "id":"{blueprint_name}"}}
     '''
-    response = apstra_post(url=url, data=data)
+    response = ba.apstra_post(url=url, data=data)
     return response
 
 
@@ -282,7 +234,7 @@ def blueprint_resource_asn_superspine(blueprint_name, asn_pool):
     data = f'''
     {{"pool_ids":["{asn_pool}"]}}
     '''
-    response = apstra_put(url=url, data=data)
+    response = ba.apstra_put(url=url, data=data)
     return response
 
 
@@ -294,7 +246,7 @@ def blueprint_resource_asn_spine(blueprint_name, asn_pool):
     data = f'''
     {{"pool_ids":["{asn_pool}"]}}
     '''
-    response = apstra_put(url=url, data=data)
+    response = ba.apstra_put(url=url, data=data)
     return response
 
 
@@ -306,7 +258,7 @@ def blueprint_resource_asn_leaf(blueprint_name, asn_pool):
     data = f'''
     {{"pool_ids":["{asn_pool}"]}}
     '''
-    response = apstra_put(url=url, data=data)
+    response = ba.apstra_put(url=url, data=data)
     return response
 
 
@@ -318,7 +270,7 @@ def blueprint_resource_loopback_superspine(blueprint_name, loopback_pool):
     data = f'''
     {{"pool_ids":["{loopback_pool}"]}}
     '''
-    response = apstra_put(url=url, data=data)
+    response = ba.apstra_put(url=url, data=data)
     return response
 
 
@@ -330,7 +282,7 @@ def blueprint_resource_loopback_spine(blueprint_name, loopback_pool):
     data = f'''
     {{"pool_ids":["{loopback_pool}"]}}
     '''
-    response = apstra_put(url=url, data=data)
+    response = ba.apstra_put(url=url, data=data)
     return response
 
 
@@ -342,7 +294,7 @@ def blueprint_resource_loopback_leaf(blueprint_name, loopback_pool):
     data = f'''
     {{"pool_ids":["{loopback_pool}"]}}
     '''
-    response = apstra_put(url=url, data=data)
+    response = ba.apstra_put(url=url, data=data)
     return response
 
 
@@ -354,7 +306,7 @@ def blueprint_resource_fabric_spine_superspine(blueprint_name, fabric_pool):
     data = f'''
     {{"pool_ids":["{fabric_pool}"]}}
     '''
-    response = apstra_put(url=url, data=data)
+    response = ba.apstra_put(url=url, data=data)
     return response
 
 
@@ -366,7 +318,7 @@ def blueprint_resource_fabric_spine_leaf(blueprint_name, fabric_pool):
     data = f'''
     {{"pool_ids":["{fabric_pool}"]}}
     '''
-    response = apstra_put(url=url, data=data)
+    response = ba.apstra_put(url=url, data=data)
     return response
 
 
@@ -378,24 +330,8 @@ def blueprint_resource_generic_link_ip(blueprint_name, ip_pool):
     data = f'''
     {{"pool_ids":["{ip_pool}"]}}
     '''
-    response = apstra_put(url=url, data=data)
+    response = ba.apstra_put(url=url, data=data)
     return response
-
-
-def get_blueprint_device_id(blueprint_name):
-
-    """
-    Get the default device ID in the blueprint. We need this to configure the right device profile
-    """
-    url = f"{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}/experience/web/cabling-map"
-    id_list=[]
-    response = apstra_get(url=url)
-
-    for id in response.json()['links']:
-        id=id['endpoints']
-        for value in id:
-            id_list.append(value['system'])
-    return id_list
 
 
 def blueprint_device_profile_3_stage(blueprint_name, spine_device, leaf_device, borderleaf_device):
@@ -404,13 +340,13 @@ def blueprint_device_profile_3_stage(blueprint_name, spine_device, leaf_device, 
 
     """
     Define 3 Stage clos device profile.
-    Get the list of device using: get_blueprint_device_id
+    Get the list of device using: ba.get_blueprint_device_id
     and based on that, define the right device profiles
     """
 
     url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_interface_map_assignments_url}'
 
-    device_id_list = get_blueprint_device_id(blueprint_name)
+    device_id_list = ba.get_blueprint_device_id(blueprint_name)
 
     interface_maps = {}
 
@@ -429,7 +365,7 @@ def blueprint_device_profile_3_stage(blueprint_name, spine_device, leaf_device, 
     }}
     '''
 
-    response = apstra_put(url=url, data=data)
+    response = ba.apstra_put(url=url, data=data)
     return response
 
 
@@ -437,13 +373,13 @@ def blueprint_device_profile_5_stage(blueprint_name, superspine_device, spine_de
 
     """
     Define 5 Stage clos device profile.
-    Get the list of device using: get_blueprint_device_id
+    Get the list of device using: ba.get_blueprint_device_id
     and based on that, define the right device profiles
     """
 
     url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_interface_map_assignments_url}'
 
-    device_id_list = get_blueprint_device_id(blueprint_name)
+    device_id_list = ba.get_blueprint_device_id(blueprint_name)
 
     interface_maps = {}
 
@@ -466,36 +402,17 @@ def blueprint_device_profile_5_stage(blueprint_name, superspine_device, spine_de
     }}
     '''
 
-    response = apstra_put(url=url, data=data)
+    response = ba.apstra_put(url=url, data=data)
     return response
 
 
 """
 Now we are build the logic to associate the right physical devices
 3 steps:
-1- get all blueprint information using: get_blueprint_all_info
+1- get all blueprint information using: ba.get_blueprint_all_info
 2- get all system devices to config
 3- and send the right parameters
 """
-
-
-def get_blueprint_all_info(blueprint_name):
-
-    """
-    get all bluprint info
-    """
-    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}'
-    response = apstra_get(url=url)
-    return response
-
-
-def get_system_info():
-    """
-    get all system ids
-    """
-    url = f'{url_ba.apstra_url}{url_ba.systems_url}'
-    response = apstra_get(url=url)
-    return response
 
 
 def blueprint_physical_device(blueprint_name, serial_number, blueprint_device_id):
@@ -510,14 +427,14 @@ def blueprint_physical_device(blueprint_name, serial_number, blueprint_device_id
     {{"system_id":"{serial_number}", "deploy_mode":"deploy"}}
     '''
 
-    response = apstra_patch(url=url, data=data)
+    response = ba.apstra_patch(url=url, data=data)
     return response
 
 
 def send_physical_device_parameters_dc1(blueprint_name):
 
-    blueprint_response = get_blueprint_all_info(blueprint_name=blueprint_name)
-    devices_response = get_system_info()
+    blueprint_response = ba.get_blueprint_all_info(blueprint_name=blueprint_name)
+    devices_response = ba.get_system_info()
 
     for key, value in blueprint_response.json()['nodes'].items():
         device = value.get('role')
@@ -555,8 +472,8 @@ def send_physical_device_parameters_dc1(blueprint_name):
 
 def send_physical_device_parameters_dc2(blueprint_name):
 
-    blueprint_response = get_blueprint_all_info(blueprint_name=blueprint_name)
-    devices_response = get_system_info()
+    blueprint_response = ba.get_blueprint_all_info(blueprint_name=blueprint_name)
+    devices_response = ba.get_system_info()
 
     for key, value in blueprint_response.json()['nodes'].items():
         device = value.get('role')
@@ -616,14 +533,14 @@ def set_blueprint_sz(blueprint_name, zn_name, vni_number: int):
     "vrf_name": "{zn_name}"
     }}
     '''
-    response = apstra_post(url=url, data=data)
+    response = ba.apstra_post(url=url, data=data)
     return response
 
 
 def get_blueprint_sz(blueprint_name):
 
     url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_security_zone_url}'
-    response = apstra_get(url=url)
+    response = ba.apstra_get(url=url)
     return response
 
 
@@ -643,7 +560,7 @@ def set_blueprint_sz_loopback(zn_name, blueprint_name, ip_pool):
 
     url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprints_resouce_group_url}/ip/sz%3A{sz_id}%2Cleaf_loopback_ips'
 
-    response = apstra_put(url=url, data=data)
+    response = ba.apstra_put(url=url, data=data)
     return response
 
 
@@ -652,7 +569,7 @@ def set_blueprint_vn(blueprint_name, vn_name, sz_name, ipv4_network, ipv4_gw, vl
     print(f"--------------------Setting virtual network : {vn_name} to security zone: {sz_name} "
           f"with vlan id: {vlan_id} vxlan id: {vni_id} network: {ipv4_network} gateway: {ipv4_gw}")
 
-    response = get_blueprint_device_id(blueprint_name)
+    response = ba.get_blueprint_device_id(blueprint_name)
     devices_list = []
     for device in response:
         if device['role'] == 'leaf':
@@ -691,28 +608,13 @@ def set_blueprint_vn(blueprint_name, vn_name, sz_name, ipv4_network, ipv4_gw, vl
     ]
     }}
     '''
-    response = apstra_post(url=url, data=data)
+    response = ba.apstra_post(url=url, data=data)
     return response
 
 
 """
 set the leaf server interface
 """
-
-
-def get_blueprint_virtual_network(blueprint_name, vlan_name):
-
-    """
-    GET VIRTUAL NETWORK ID
-    """
-    virtual_network_url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.get_blueprint_virtual_networks}'
-    virtual_network_response = apstra_get(url=virtual_network_url)
-    virtual_network_response_json = virtual_network_response.json()
-    for key, value in virtual_network_response_json['virtual_networks'].items():
-        if value['label'] == vlan_name:
-            vn_id = key
-
-    return vn_id
 
 
 def set_blueprint_interface_virtual_network(blueprint_name, vn_id, sl_1, sl_2):
@@ -749,24 +651,14 @@ def set_blueprint_interface_virtual_network(blueprint_name, vn_id, sl_1, sl_2):
         ]
         }}
         '''
-    response = apstra_put(data=data, url=url)
-
-
-def get_deploy_version(blueprint_name):
-
-    """
-    get version to commit
-    """
-    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_version_url}'
-    response = apstra_get(url=url)
-    return response.json()['staging_version']
+    response = ba.apstra_put(data=data, url=url)
 
 
 def set_deploy_blueprint(blueprint_name, description):
 
     print(f"--------------------Deploying blueprint: {blueprint_name}")
 
-    get_version = get_deploy_version(blueprint_name)
+    get_version = ba.get_deploy_version(blueprint_name)
 
     url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.deploy_blueprint_url}?async=full'
     data = f'''
@@ -775,7 +667,7 @@ def set_deploy_blueprint(blueprint_name, description):
     "description": "{description}"
     }}
     '''
-    response = apstra_put(url=url, data=data)
+    response = ba.apstra_put(url=url, data=data)
 
 
 """
@@ -802,7 +694,7 @@ def set_remote_gateway(blueprint_name, gw_asn, gw_name, gw_ip, vqfx_name):
     }}
     '''
 
-    response = apstra_post(url=url, data=data)
+    response = ba.apstra_post(url=url, data=data)
 
 
 if __name__ == '__main__':
