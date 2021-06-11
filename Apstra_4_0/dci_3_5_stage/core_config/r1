@@ -1,3 +1,4 @@
+set interfaces ge-0/0/0 mtu 9000
 set interfaces ge-0/0/0 unit 0 family inet address 30.0.0.0/31
 set interfaces ge-0/0/0 unit 0 family iso
 set interfaces ge-0/0/0 unit 0 family mpls
