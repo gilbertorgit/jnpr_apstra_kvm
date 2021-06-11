@@ -61,7 +61,7 @@ This test lab has been built and tested using:
   2.3. 500GB - SSD
 3. vQFX 20.2R1.10
 4. vMX 20.4R1.12
-5. Apstra 3.3.0
+5. Apstra 4.0.0
 6. CentOS-7-x86_64-GenericCloud.qcow2
 ```
 
@@ -161,7 +161,7 @@ You will have a directory like that one:***
 ```
 root@lab:/home/lab/vmx# ls -l /home/lab/vmx/images/
 total 7997348
--rw-r--r-- 1 root root 1951413760 Mar 25 11:07 aos_server_3.3.0.2-46.qcow2
+-rw-r--r-- 1 root root 1951413760 Mar 25 11:07 aos_server_4.0.0-314.qcow2
 -rw-r--r-- 1 root root  858783744 Mar 25 11:08 CentOS-7-x86_64-GenericCloud.qcow2
 -rw-r--r-- 1 root root  588251136 Mar 25 11:08 jinstall-vqfx-10-f-20.2R1.10.img
 -rw-r--r-- 1  930  930 1391656960 Dec 20 14:46 junos-vmx-x86-64-20.4R1.12.qcow2

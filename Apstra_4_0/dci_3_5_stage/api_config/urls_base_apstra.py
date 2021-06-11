@@ -10,8 +10,8 @@ import json
 requests.packages.urllib3.disable_warnings()
 
 # Basic information
-apstra_url = 'https://192.168.122.180:443'
-apstra_port = '8001'
+apstra_url = 'https://127.0.0.1:8101'
+apstra_port = '8900'
 username = 'admin'
 password = 'admin'
 
@@ -47,7 +47,7 @@ blueprints_resouce_group_loopback_spine_url = '/resource_groups/ip/spine_loopbac
 blueprints_resouce_group_loopback_leaf_url = '/resource_groups/ip/leaf_loopback_ips'
 blueprints_resouce_group_spine_superspine_link_url = '/resource_groups/ip/spine_superspine_link_ips'
 blueprints_resouce_group_spine_leaf_link_url = '/resource_groups/ip/spine_leaf_link_ips'
-blueprints_resouce_group_external_ip_url = '/resource_groups/ip/to_external_router_link_ips'
+blueprints_resource_groups_ip_to_generic_link_ips_url = '/resource_groups/ip/to_generic_link_ips'
 blueprints_resouce_group_vni_url = '/resource_groups/vni/evpn_l3_vnis'
 
 blueprint_device_id_url = '/cabling-map'
@@ -71,3 +71,21 @@ blueprint_remote_gateway_url = '/remote_gateways'
 # commit blueprint
 blueprint_version_url = '/diff-status'
 deploy_blueprint_url = '/deploy'
+
+# connectivity template
+# - URL to create a CT
+obj_policy_import_url = '/obj-policy-import'
+
+# - URL to get CT policies created
+obj_policy_export_url = '/obj-policy-export'
+
+# - URL to assign a CT to a device (application points)
+obj_policy_application_points_url = '/obj-policy-application-points'
+
+# routing policies
+
+routing_policies_url = '/routing-policies'
+
+# virtual_network - apstra 4.0
+
+virtual_network_url = '/virtual-networks'

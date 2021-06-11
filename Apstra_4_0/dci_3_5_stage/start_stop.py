@@ -9,6 +9,9 @@ from time import sleep
 import create_lab
 import time
 
+bridge_echo = 65535
+# bridge_echo = 16384
+
 
 def clean_memory():
 
@@ -91,7 +94,7 @@ def getting_destroyed_servers():
     print("---------------------------------------------------------")
     print("--------------------------------------------------------- Get destroyed Servers")
 
-    vqfx_info = subprocess.Popen("virsh list --all | egrep 'c[1-2]_v|aos_server' | awk '{print $2}'", shell=True,
+    vqfx_info = subprocess.Popen("virsh list --all | egrep 'c[1-2]_v|apstra_server' | awk '{print $2}'", shell=True,
                                  stdout=subprocess.PIPE).stdout.read().decode('utf-8')
     # creates list of the vqfx_info and clean the empty spaces
     li_vqfx = list(vqfx_info.split("\n"))
@@ -125,7 +128,7 @@ def getting_running_servers():
     print("---------------------------------------------------------")
     print("--------------------------------------------------------- Get Running Servers")
 
-    vqfx_info = subprocess.Popen("virsh list | egrep 'c[1-2]_|aos_server' | awk '{print $2}'", shell=True,
+    vqfx_info = subprocess.Popen("virsh list | egrep 'c[1-2]_|apstra_server' | awk '{print $2}'", shell=True,
                                  stdout=subprocess.PIPE).stdout.read().decode('utf-8')
     # creates list of the vqfx_info and clean the empty spaces
     li_vqfx = list(vqfx_info.split("\n"))
@@ -152,7 +155,7 @@ def create_fabric_interface():
         subprocess.call(cmd_brctl, shell=True)
         subprocess.call(cmd_ifconfig, shell=True)
 
-        lacp_ldp = f'echo 16384 > /sys/class/net/{br_interface}/bridge/group_fwd_mask'
+        lacp_ldp = f'echo {bridge_echo} > /sys/class/net/{br_interface}/bridge/group_fwd_mask'
         subprocess.call(lacp_ldp, shell=True)
 
         print(f'- Creating Interface {br_interface}')

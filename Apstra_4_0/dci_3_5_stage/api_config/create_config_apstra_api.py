@@ -8,6 +8,8 @@ import requests
 import json
 from time import sleep
 import base_apstra as ba
+import urls_base_apstra as url_ba
+import ct_config_base as ct
 import templates_data as td
 import rack_data as rd
 import logical_data as ld
@@ -25,8 +27,8 @@ Basic GET, PUT, Token etc.
 
 def get_token():
 
-    data = {'username': ba.username, 'password': ba.password}
-    auth_resp = requests.post(f'{ba.apstra_url}{ba.login_url}', data=json.dumps(data), verify=False)
+    data = {'username': url_ba.username, 'password': url_ba.password}
+    auth_resp = requests.post(f'{url_ba.apstra_url}{url_ba.login_url}', data=json.dumps(data), verify=False)
 
     return auth_resp.json()['token']
 
@@ -74,13 +76,13 @@ def create_ip_list(start, end):
 def get_asn_pool():
 
     headers = {'Content-Type':'application/json', 'Cache-Control':'no-cache', 'AUTHTOKEN': get_token()}
-    asn_pool_resp = requests.get(f'{ba.apstra_url}{ba.asn_pool_url}', headers=headers, verify=False)
+    asn_pool_resp = requests.get(f'{url_ba.apstra_url}{url_ba.asn_pool_url}', headers=headers, verify=False)
 
 
 def create_asn_pool(asn_name, asn_first, asn_last):
 
         print(f'--------------------Creating ASN pool: {asn_name} range: {asn_first}-{asn_last}')
-        url = f'{ba.apstra_url}{ba.asn_pool_url}'
+        url = f'{url_ba.apstra_url}{url_ba.asn_pool_url}'
         data = f''' 
         {{ "display_name": "{asn_name}",
         "id": "{asn_name}",
@@ -100,7 +102,7 @@ def create_vni_pool(vni_name, vni_first, vni_last):
 
     print(f'--------------------Creating VNI pool: {vni_name} range: {vni_first}-{vni_last}')
 
-    url = f'{ba.apstra_url}{ba.vni_pool_url}'
+    url = f'{url_ba.apstra_url}{url_ba.vni_pool_url}'
 
     data = f'''{{ "display_name": "{vni_name}",
     "ranges": [
@@ -120,7 +122,7 @@ def create_ip_pool(ip_name, ip_network):
 
     print(f'--------------------Creating IP pool: {ip_name} network: {ip_network}')
 
-    url = f'{ba.apstra_url}{ba.ip_pool_url}'
+    url = f'{url_ba.apstra_url}{url_ba.ip_pool_url}'
 
     data = f'''{{
     "subnets": [ {{"network": "{ip_network}"}} ],
@@ -136,7 +138,7 @@ def create_external_router(router_name, loopback_address, asn):
 
     print(f'--------------------Creating External Router: {router_name} network: {loopback_address} asn: {asn}')
 
-    url = f'{ba.apstra_url}{ba.external_router}'
+    url = f'{url_ba.apstra_url}{url_ba.external_router}'
 
     data = f''' {{
     "display_name": "{router_name}",
@@ -153,7 +155,7 @@ def create_offbox_device(start_ip, end_ip, username=f'lab', password=f'lab123', 
                          agent_type='offbox', operation_mode='full_control'):
 
     print(f'--------------------Creating Offbox Devices')
-    url = f'{ba.apstra_url}{ba.system_gent_url}'
+    url = f'{url_ba.apstra_url}{url_ba.system_gent_url}'
 
     mgmt_list = create_ip_list(start_ip,end_ip)
     response_list = []
@@ -176,7 +178,7 @@ def create_offbox_device(start_ip, end_ip, username=f'lab', password=f'lab123', 
 
 def manage_device(system_id, model):
 
-    url = f'{ba.apstra_url}{ba.systems_batch_update}'
+    url = f'{url_ba.apstra_url}{url_ba.systems_batch_update}'
 
     data = f'''{{"{system_id}": 
     {{"user_config": 
@@ -192,7 +194,7 @@ def manage_device(system_id, model):
 
 def manage_device_all():
 
-    device_list_url = f'{ba.apstra_url}{ba.systems_url}'
+    device_list_url = f'{url_ba.apstra_url}{url_ba.systems_url}'
     device_list_response = apstra_get(device_list_url).json()
 
     device_list_all = []
@@ -213,7 +215,7 @@ def create_logical_device(data):
 
     print(f'--------------------Creating Logical Devices')
 
-    url = f'{ba.apstra_url}{ba.logical_device_design_url}'
+    url = f'{url_ba.apstra_url}{url_ba.logical_device_design_url}'
     data = data
     response = apstra_post(url=url, data=data)
     return response
@@ -223,7 +225,7 @@ def create_interface_map(data):
 
     print(f'--------------------Creating Interface Maps')
 
-    url = f'{ba.apstra_url}{ba.interface_maps_url}'
+    url = f'{url_ba.apstra_url}{url_ba.interface_maps_url}'
     data = data
     response = apstra_post(url=url, data=data)
     return response
@@ -233,7 +235,7 @@ def create_rack_type(data):
 
     print(f'--------------------Creating Racks')
 
-    url = f'{ba.apstra_url}{ba.rack_design_url}'
+    url = f'{url_ba.apstra_url}{url_ba.rack_design_url}'
     data = data
     response = apstra_post(url=url, data=data)
     return response
@@ -243,7 +245,7 @@ def create_template(data):
 
     print(f'--------------------Creating Templates')
 
-    url = f'{ba.apstra_url}{ba.template_design_url}'
+    url = f'{url_ba.apstra_url}{url_ba.template_design_url}'
     data = data
     response = apstra_post(url=url, data=data)
     return response
@@ -253,7 +255,7 @@ def create_blueprint(blueprint_name, template_name):
 
     print(f'--------------------Creating blueprint name {blueprint_name} based on template_name: {template_name}')
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}'
 
     data = f'''
         {{"design":"two_stage_l3clos", 
@@ -276,7 +278,7 @@ def blueprint_resource_asn_superspine(blueprint_name, asn_pool):
 
     print(f"--------------------Assigning SuperSpine ASN: {asn_pool} to blueprint: {blueprint_name}")
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprints_resource_group_asn_superspine_url}'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprints_resource_group_asn_superspine_url}'
     data = f'''
     {{"pool_ids":["{asn_pool}"]}}
     '''
@@ -288,7 +290,7 @@ def blueprint_resource_asn_spine(blueprint_name, asn_pool):
 
     print(f"--------------------Assigning Spine ASN: {asn_pool} to blueprint: {blueprint_name}")
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprints_resouce_group_asn_spine_url}'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprints_resouce_group_asn_spine_url}'
     data = f'''
     {{"pool_ids":["{asn_pool}"]}}
     '''
@@ -300,7 +302,7 @@ def blueprint_resource_asn_leaf(blueprint_name, asn_pool):
 
     print(f"--------------------Assigning Leaf ASN: {asn_pool} to blueprint: {blueprint_name}")
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprints_resouce_group_asn_leaf_url}'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprints_resouce_group_asn_leaf_url}'
     data = f'''
     {{"pool_ids":["{asn_pool}"]}}
     '''
@@ -312,7 +314,7 @@ def blueprint_resource_loopback_superspine(blueprint_name, loopback_pool):
 
     print(f"--------------------Assigning SuperSpine loopback: {loopback_pool} to blueprint: {blueprint_name}")
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprints_resouce_group_loopback_superspine_url}'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprints_resouce_group_loopback_superspine_url}'
     data = f'''
     {{"pool_ids":["{loopback_pool}"]}}
     '''
@@ -324,7 +326,7 @@ def blueprint_resource_loopback_spine(blueprint_name, loopback_pool):
 
     print(f"--------------------Assigning spine loopback: {loopback_pool} to blueprint: {blueprint_name}")
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprints_resouce_group_loopback_spine_url}'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprints_resouce_group_loopback_spine_url}'
     data = f'''
     {{"pool_ids":["{loopback_pool}"]}}
     '''
@@ -336,7 +338,7 @@ def blueprint_resource_loopback_leaf(blueprint_name, loopback_pool):
 
     print(f"--------------------Assigning leaf loopback: {loopback_pool} to blueprint: {blueprint_name}")
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprints_resouce_group_loopback_leaf_url}'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprints_resouce_group_loopback_leaf_url}'
     data = f'''
     {{"pool_ids":["{loopback_pool}"]}}
     '''
@@ -348,7 +350,7 @@ def blueprint_resource_fabric_spine_superspine(blueprint_name, fabric_pool):
 
     print(f"--------------------Assigning Spine-SuperSpine fabric IP: {fabric_pool} to blueprint: {blueprint_name}")
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprints_resouce_group_spine_superspine_link_url}'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprints_resouce_group_spine_superspine_link_url}'
     data = f'''
     {{"pool_ids":["{fabric_pool}"]}}
     '''
@@ -360,7 +362,7 @@ def blueprint_resource_fabric_spine_leaf(blueprint_name, fabric_pool):
 
     print(f"--------------------Assigning Spine-Leaf fabric IP: {fabric_pool} to blueprint: {blueprint_name}")
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprints_resouce_group_spine_leaf_link_url}'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprints_resouce_group_spine_leaf_link_url}'
     data = f'''
     {{"pool_ids":["{fabric_pool}"]}}
     '''
@@ -368,11 +370,11 @@ def blueprint_resource_fabric_spine_leaf(blueprint_name, fabric_pool):
     return response
 
 
-def blueprint_resource_external_router_ip(blueprint_name, ip_pool):
+def blueprint_resource_generic_link_ip(blueprint_name, ip_pool):
 
     print(f"--------------------Assigning external router IP: {ip_pool} to blueprint: {blueprint_name}")
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprints_resouce_group_external_ip_url}'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprints_resource_groups_ip_to_generic_link_ips_url}'
     data = f'''
     {{"pool_ids":["{ip_pool}"]}}
     '''
@@ -385,7 +387,7 @@ def get_blueprint_device_id(blueprint_name):
     """
     Get the default device ID in the blueprint. We need this to configure the right device profile
     """
-    url = f"{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}/experience/web/cabling-map"
+    url = f"{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}/experience/web/cabling-map"
     id_list=[]
     response = apstra_get(url=url)
 
@@ -406,7 +408,7 @@ def blueprint_device_profile_3_stage(blueprint_name, spine_device, leaf_device, 
     and based on that, define the right device profiles
     """
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprint_interface_map_assignments_url}'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_interface_map_assignments_url}'
 
     device_id_list = get_blueprint_device_id(blueprint_name)
 
@@ -439,7 +441,7 @@ def blueprint_device_profile_5_stage(blueprint_name, superspine_device, spine_de
     and based on that, define the right device profiles
     """
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprint_interface_map_assignments_url}'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_interface_map_assignments_url}'
 
     device_id_list = get_blueprint_device_id(blueprint_name)
 
@@ -482,7 +484,7 @@ def get_blueprint_all_info(blueprint_name):
     """
     get all bluprint info
     """
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}'
     response = apstra_get(url=url)
     return response
 
@@ -491,7 +493,7 @@ def get_system_info():
     """
     get all system ids
     """
-    url = f'{ba.apstra_url}{ba.systems_url}'
+    url = f'{url_ba.apstra_url}{url_ba.systems_url}'
     response = apstra_get(url=url)
     return response
 
@@ -503,7 +505,7 @@ def blueprint_physical_device(blueprint_name, serial_number, blueprint_device_id
     send parameters to define the physical device
     """
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}/nodes/{blueprint_device_id}'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}/nodes/{blueprint_device_id}'
     data = f'''
     {{"system_id":"{serial_number}", "deploy_mode":"deploy"}}
     '''
@@ -608,7 +610,7 @@ def blueprint_external_router_import(blueprint_name, external_router_id):
     Import external router in the blueprint
     """
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprint_external_router_import_url}'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_external_router_import_url}'
     data = f'''
     {{
     "router_id": "{external_router_id}"
@@ -625,7 +627,7 @@ def create_external_router_link(blueprint_name, router_name):
     """
     get external router id
     """
-    external_router_id_url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprint_external_router_import_url}'
+    external_router_id_url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_external_router_import_url}'
 
     external_router_response = apstra_get(url=external_router_id_url)
     for external_router in external_router_response.json()['items']:
@@ -636,7 +638,7 @@ def create_external_router_link(blueprint_name, router_name):
     get external router link id name: return example: jnpr_border_leaf_001_leaf1<->router0001
     """
 
-    router_id_url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprint_external_router_links_url}'
+    router_id_url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_external_router_links_url}'
     response = apstra_get(url=router_id_url)
 
     router_link_id = []
@@ -645,7 +647,7 @@ def create_external_router_link(blueprint_name, router_name):
 
     list_json = ','.join(set(router_link_id))
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprint_external_router_links_url}/{router_id}'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_external_router_links_url}/{router_id}'
 
     """
     now with the router id + router link id we can send the right put. 
@@ -672,7 +674,7 @@ def set_blueprint_sz(blueprint_name, zn_name, vni_number: int):
 
     print(f"--------------------Creating Security Zone : {zn_name} VNI: {vni_number}")
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprint_security_zone_url}'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_security_zone_url}'
 
     data = f'''
     {{
@@ -688,7 +690,7 @@ def set_blueprint_sz(blueprint_name, zn_name, vni_number: int):
 
 def get_blueprint_sz(blueprint_name):
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprint_security_zone_url}'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_security_zone_url}'
     response = apstra_get(url=url)
     return response
 
@@ -707,7 +709,7 @@ def set_blueprint_sz_loopback(zn_name, blueprint_name, ip_pool):
         {{"pool_ids":["{ip_pool}"]}}
     '''
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprints_resouce_group_url}/ip/sz%3A{sz_id}%2Cleaf_loopback_ips'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprints_resouce_group_url}/ip/sz%3A{sz_id}%2Cleaf_loopback_ips'
 
     response = apstra_put(url=url, data=data)
     return response
@@ -735,8 +737,9 @@ def set_blueprint_vn(blueprint_name, vn_name, sz_name, ipv4_network, ipv4_gw, vl
     ipv4_enable = 'true'
     ipv4_gw = '"' + ipv4_gw + '"'
     ipv4_network = '"' + ipv4_network + '"'
+    virtual_gateway_ipv4_enabled = 'true'
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprint_virtual_networks_url}'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_virtual_networks_url}'
     data = f'''
     {{
     "virtual_networks": [
@@ -749,6 +752,7 @@ def set_blueprint_vn(blueprint_name, vn_name, sz_name, ipv4_network, ipv4_gw, vl
     "ipv4_subnet": {ipv4_network},
     "label": "{vn_name}",
     "ipv4_enabled": {ipv4_enable},
+    "virtual_gateway_ipv4_enabled": {virtual_gateway_ipv4_enabled},
     "security_zone_id": "{sz_id}",
     "vn_id": "{vni_id}"
     }}
@@ -769,7 +773,7 @@ def get_blueprint_virtual_network(blueprint_name, vlan_name):
     """
     GET VIRTUAL NETWORK ID
     """
-    virtual_network_url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.get_blueprint_virtual_networks}'
+    virtual_network_url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.get_blueprint_virtual_networks}'
     virtual_network_response = apstra_get(url=virtual_network_url)
     virtual_network_response_json = virtual_network_response.json()
     for key, value in virtual_network_response_json['virtual_networks'].items():
@@ -789,7 +793,7 @@ def set_blueprint_server_link(blueprint_name, vlan_name):
 
     vn_id = get_blueprint_virtual_network(blueprint_name, vlan_name)
 
-    server_links_url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}/experience/web/leaf-server-links/{vn_id}'
+    server_links_url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}/experience/web/leaf-server-links/{vn_id}'
     server_links_response = apstra_get(server_links_url)
     server_links_response_json = server_links_response.json()
 
@@ -886,7 +890,7 @@ def set_blueprint_interface_virtual_network(blueprint_name, vn_id, sl_1, sl_2):
     set interface port to virtual network
     """
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}/virtual-networks/{vn_id}/endpoints'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}/virtual-networks/{vn_id}/endpoints'
 
     if sl_2 != None:
         data = f'''
@@ -922,7 +926,7 @@ def get_deploy_version(blueprint_name):
     """
     get version to commit
     """
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprint_version_url}'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_version_url}'
     response = apstra_get(url=url)
     return response.json()['staging_version']
 
@@ -933,7 +937,7 @@ def set_deploy_blueprint(blueprint_name, description):
 
     get_version = get_deploy_version(blueprint_name)
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.deploy_blueprint_url}?async=full'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.deploy_blueprint_url}?async=full'
     data = f'''
     {{
     "version": {get_version},
@@ -948,11 +952,12 @@ configure remote gateway DC1 and DC2
 """
 
 
-def set_remote_gateway(blueprint_name, gw_asn, gw_name, gw_ip):
+def set_remote_gateway(blueprint_name, gw_asn, gw_name, gw_ip, vqfx_name):
 
     print(f"--------------------Configuring remote gateway: {gw_name} - blueprint: {blueprint_name}")
 
-    external_links_url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprint_external_router_links_url}'
+    """
+    external_links_url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_external_router_links_url}'
     external_links_response = apstra_get(external_links_url)
 
     external_link_id = []
@@ -961,24 +966,37 @@ def set_remote_gateway(blueprint_name, gw_asn, gw_name, gw_ip):
         external_link_id.append(f'"{system_id}"')
 
     list_json = ','.join(set(external_link_id))
+    """
+    gw_list = ba.get_external_router_id(blueprint_name, vqfx_name)
 
-    url = f'{ba.apstra_url}{ba.blueprints_url}/{blueprint_name}{ba.blueprint_remote_gateway_url}'
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_remote_gateway_url}'
 
     data = f'''{{
     "gw_asn": {gw_asn},
     "gw_ip": "{gw_ip}",
     "gw_name": "{gw_name}",
     "local_gw_nodes": [
-    {list_json}
+    {gw_list}
     ],
     "ttl": 50
     }}
     '''
+
     response = apstra_post(url=url, data=data)
 
 
-if __name__ == '__main__':
+############################# Draft for connectivity templates
 
+
+def get_dc1_info():
+
+    url = 'https://127.0.0.1:8900/api/blueprints/DC1/'
+    response = apstra_get(url=url)
+    print(response.json())
+
+
+if __name__ == '__main__':
+    """
     print("################################################### Creating Common resources")
     create_asn_pool("DC1-ASN-POOL", 100, 199)
     create_asn_pool("DC2-ASN-POOL", 200, 299)
@@ -996,39 +1014,45 @@ if __name__ == '__main__':
     create_ip_pool("DC2-SUPERSPINE-LOOPBACK", "20.20.33.0/24")
     create_ip_pool("DC2-VIRTUAL-LEAF-LOOPBACK", "20.100.100.0/24")
     sleep(2)
-    create_external_router("DC1-R1", "100.100.11.1", 65002)
-    create_external_router("DC2-R2", "100.100.12.1", 65002)
+
     sleep(2)
     create_offbox_device('192.168.122.215', '192.168.122.228')
     sleep(60)
     manage_device_all()
     sleep(5)
+    
     create_logical_device(ld.data_JNPR_7_10_Spine)
     create_logical_device(ld.data_JNPR_7_10_SuperSpine)
     create_logical_device(ld.data_JNPR_8_10_BorderLeaf)
     create_logical_device(ld.data_JNPR_10_10_Leaf)
     sleep(5)
+    
     create_interface_map(imd.data_JNPR_vQFX_7_10_Spine)
     create_interface_map(imd.data_JNPR_vQFX_7_10_SuperSpine)
     create_interface_map(imd.data_JNPR_vQFX_8_10_BorderLeaf)
     create_interface_map(imd.data_JNPR_vQFX_10_10_Leaf)
+
     sleep(2)
+    
     create_rack_type(rd.data_rack_JNPR_SINGLE_LEAF)
     create_rack_type(rd.data_rack_JNPR_ESI_LEAF)
     create_rack_type(rd.data_rack_JNPR_BORDER_LEAF)
     sleep(2)
+
     create_template(td.data_JNPR_3_STAGE_TEMPLATE)
     create_template(td.data_JNPR_5_STAGE_BASE)
     create_template(td.data_JNPR_5_STAGE_TEMPLATE)
     sleep(2)
-
+    
     create_blueprint("DC1", "JNPR-3-STAGE-TEMPLATE")
     create_blueprint("DC2", "JNPR-5-STAGE-TEMPLATE")
     sleep(10)
-
-    
+    """
+    """
     #--------------------- DC1
     print("################################################### DC1 Configuration")
+    
+    # Allocate IP pools to blueprint
     blueprint_resource_asn_spine("DC1", "DC1-ASN-POOL")
     sleep(1)
     blueprint_resource_asn_leaf("DC1", "DC1-ASN-POOL")
@@ -1039,44 +1063,64 @@ if __name__ == '__main__':
     sleep(1)
     blueprint_resource_fabric_spine_leaf("DC1", "DC1-SPINE-LEAF")
     sleep(1)
-    blueprint_resource_external_router_ip("DC1", "DC1-EXTERNAL-ROUTER")
-    sleep(1)
     
-    blueprint_device_profile_3_stage("DC1", "JNPR_vQFX-7x10-Spine", "JNPR_vQFX_10x10-Leaf", "JNPR_vQFX_8x10-BorderLeaf")
+    # assign device profiles to blueprint
+    blueprint_device_profile_3_stage("DC1", "JNPR_vQFX-7x10-Spine", "JNPR_vQFX-10x10-Leaf", "JNPR_vQFX-8x10-BorderLeaf")
     sleep(2)
     
+    # assign physical device to blueprint
     send_physical_device_parameters_dc1("DC1")
     sleep(2)
-
-    blueprint_external_router_import("DC1", "DC1-R1")
-    sleep(5)
-    create_external_router_link("DC1", "DC1-R1")
     
+    # Create Routing Zones
     set_blueprint_sz("DC1", "customer-1", 10010)
     set_blueprint_sz("DC1", "customer-2", 10020)
     
+    # Allocate IP Pool to Security Zones
     set_blueprint_sz_loopback("customer-1", "DC1", "DC1-VIRTUAL-LEAF-LOOPBACK")
     set_blueprint_sz_loopback("customer-2", "DC1", "DC1-VIRTUAL-LEAF-LOOPBACK")
-
+    
+    # Create virtual networks
     set_blueprint_vn("DC1", "VLAN10", "customer-1", "192.168.10.0/24", "192.168.10.1", 10, 5010)
     set_blueprint_vn("DC1", "VLAN20", "customer-1", "192.168.20.0/24", "192.168.20.1", 20, 5020)
     set_blueprint_vn("DC1", "VLAN100", "customer-2", "192.168.100.0/24", "192.168.100.1", 100, 5100)
     set_blueprint_vn("DC1", "VLAN200", "customer-2", "192.168.200.0/24", "192.168.200.1", 200, 5200)
-    sleep(5)
 
-    set_blueprint_server_link("DC1", "VLAN10")
+    sleep(2)
+    # create external router connectivity template, assign interface and allocate IP Pool
+    ct.set_external_router_ct("DC1", "dc1-r1-ct-policy-id", "CT-DC1-R1", "10.1.1.1", 65002)
+    sleep(2)
+    ct.set_blueprint_server_link("DC1", "CT-DC1-R1", "jnpr_border_leaf_001", "xe-0/0/4")
+    sleep(2)
+    blueprint_resource_generic_link_ip("DC1", "DC1-EXTERNAL-ROUTER")
+    sleep(2)
+    # create virtual networks connectivity template and assign interfaces
+    ct.set_virtual_network_ct("DC1", "vlan10-ct-policy-id", "CT-VLAN10", "VLAN10")
+    sleep(2)
+    ct.set_virtual_network_ct("DC1", "vlan20-ct-policy-id", "CT-VLAN20", "VLAN20")
+    sleep(2)
+    ct.set_virtual_network_ct("DC1", "vlan100-ct-policy-id", "CT-VLAN100", "VLAN100")
+    sleep(2)
+    ct.set_virtual_network_ct("DC1", "vlan200-ct-policy-id", "CT-VLAN200", "VLAN200")
+    sleep(2)
+
+    ct.set_blueprint_server_link("DC1", "CT-VLAN10", "jnpr_esi_leaf_001", "ae1")
     sleep(1)
-    set_blueprint_server_link("DC1", "VLAN20")
+    ct.set_blueprint_server_link("DC1", "CT-VLAN10", "jnpr_single_leaf_001", "xe-0/0/2")
     sleep(1)
-    set_blueprint_server_link("DC1", "VLAN100")
+    ct.set_blueprint_server_link("DC1", "CT-VLAN20", "jnpr_single_leaf_001", "xe-0/0/3")
     sleep(1)
-    set_blueprint_server_link("DC1", "VLAN200")
-    sleep(10)
+    ct.set_blueprint_server_link("DC1", "CT-VLAN100", "jnpr_esi_leaf_001", "xe-0/0/3")
+    sleep(1)
+    ct.set_blueprint_server_link("DC1", "CT-VLAN200", "jnpr_single_leaf_001", "xe-0/0/4")
+
+
+    sleep(5)
     
     set_deploy_blueprint("DC1", "DC1 full config")
+    
 
     #--------------------- DC2
-
     print("################################################### DC2 Configuration")
     blueprint_resource_asn_superspine("DC2", "DC2-ASN-POOL")
     sleep(1)
@@ -1094,16 +1138,12 @@ if __name__ == '__main__':
     sleep(1)
     blueprint_resource_fabric_spine_leaf("DC2", "DC2-SPINE-LEAF")
     sleep(1)
-    blueprint_resource_external_router_ip("DC2", "DC2-EXTERNAL-ROUTER")
-    sleep(1)
-    blueprint_device_profile_5_stage("DC2", "JNPR_vQFX-7x10-SuperSpine", "JNPR_vQFX-7x10-Spine", "JNPR_vQFX_10x10-Leaf", "JNPR_vQFX_8x10-BorderLeaf")
-    sleep(2)
-    send_physical_device_parameters_dc2("DC2")
+
+    blueprint_device_profile_5_stage("DC2", "JNPR_vQFX_7x10-SuperSpine", "JNPR_vQFX-7x10-Spine", "JNPR_vQFX-10x10-Leaf", "JNPR_vQFX-8x10-BorderLeaf")
     sleep(2)
 
-    blueprint_external_router_import("DC2", "DC2-R2")
-    sleep(5)
-    create_external_router_link("DC2", "DC2-R2")
+    send_physical_device_parameters_dc2("DC2")
+    sleep(2)
 
     set_blueprint_sz("DC2", "customer-1", 10010)
     set_blueprint_sz("DC2", "customer-2", 10020)
@@ -1117,23 +1157,50 @@ if __name__ == '__main__':
     set_blueprint_vn("DC2", "VLAN200", "customer-2", "192.168.200.0/24", "192.168.200.1", 200, 5200)
     sleep(5)
 
-    set_blueprint_server_link("DC2", "VLAN10")
+    sleep(2)
+    # create external router connectivity template, assign interface and allocate IP Pool
+    ct.set_external_router_ct("DC2", "dc2-r2-bl1-ct-policy-id", "CT-DC2-R2-BL1", "20.2.2.1", 65002)
+    ct.set_external_router_ct("DC2", "dc2-r2-bl2-ct-policy-id", "CT-DC2-R2-BL2", "20.2.2.3", 65002)
+    sleep(2)
+    ct.set_blueprint_server_link("DC2", "CT-DC2-R2-BL1", "jnpr_border_leaf_001_001", "xe-0/0/4")
+    ct.set_blueprint_server_link("DC2", "CT-DC2-R2-BL2", "jnpr_border_leaf_002_001", "xe-0/0/4")
+    sleep(2)
+    blueprint_resource_generic_link_ip("DC2", "DC2-EXTERNAL-ROUTER")
+    sleep(2)
+
+    # create virtual networks connectivity template and assign interfaces
+    ct.set_virtual_network_ct("DC2", "vlan10-ct-policy-id", "CT-VLAN10", "VLAN10")
+    sleep(2)
+    ct.set_virtual_network_ct("DC2", "vlan20-ct-policy-id", "CT-VLAN20", "VLAN20")
+    sleep(2)
+    ct.set_virtual_network_ct("DC2", "vlan30-ct-policy-id", "CT-VLAN30", "VLAN30")
+    sleep(2)
+    ct.set_virtual_network_ct("DC2", "vlan200-ct-policy-id", "CT-VLAN200", "VLAN200")
+    sleep(2)
+    
+    ct.set_blueprint_server_link("DC2", "CT-VLAN10", "jnpr_single_leaf_001_001", "xe-0/0/2")
     sleep(1)
-    set_blueprint_server_link("DC2", "VLAN20")
+    ct.set_blueprint_server_link("DC2", "CT-VLAN20", "jnpr_single_leaf_001_001", "xe-0/0/3")
     sleep(1)
-    set_blueprint_server_link("DC2", "VLAN30")
+    ct.set_blueprint_server_link("DC2", "CT-VLAN200", "jnpr_single_leaf_001_001", "xe-0/0/4")
     sleep(1)
-    set_blueprint_server_link("DC2", "VLAN200")
-    sleep(10)
+    ct.set_blueprint_server_link("DC2", "CT-VLAN10", "jnpr_single_leaf_002_001", "xe-0/0/2")
+    sleep(1)
+    ct.set_blueprint_server_link("DC2", "CT-VLAN20", "jnpr_single_leaf_002_001", "xe-0/0/3")
+    sleep(1)
+    ct.set_blueprint_server_link("DC2", "CT-VLAN30", "jnpr_single_leaf_002_001", "xe-0/0/4")
+    
     set_deploy_blueprint("DC2", "DC2 full config")
-    sleep(5)
+
+    """
 
     print("################################################### Remote Gateways Configuration")
-    set_remote_gateway("DC1", 203, "DC2-BL1", "20.20.30.0")
-    set_remote_gateway("DC1", 205, "DC2-BL2", "20.20.30.2")
+    set_remote_gateway("DC1", 203, "DC2-BL1", "20.20.30.0", ["jnpr_border_leaf_001_leaf1"])
+    set_remote_gateway("DC1", 205, "DC2-BL2", "20.20.30.2", ["jnpr_border_leaf_001_leaf1"])
     sleep(5)
     set_deploy_blueprint("DC1", "DC1 to DC2 External GW")
     sleep(5)
-    set_remote_gateway("DC2", 102, "DC1-BL1", "10.20.30.0")
+    set_remote_gateway("DC2", 102, "DC1-BL1", "10.20.30.0", ["leaf001_001_1", "leaf002_001_1"])
     sleep(5)
     set_deploy_blueprint("DC2", "DC2 to DC1 External GW")
+

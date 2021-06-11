@@ -16,8 +16,9 @@ re_image = '/var/lib/libvirt/images/vqfx-20.2R1.10-re.qcow2'
 pfe_image = '/var/lib/libvirt/images/vqfx-20.2R1.10-pfe.qcow2'
 generic_centos = '/var/lib/libvirt/images/CentOS-7-x86_64-GenericCloud.qcow2'
 image_path = '/var/lib/libvirt/images/'
+apstra_image = 'aos_server_4.0.0-314.qcow2'
 
-aos_vm = {'aos_server_3_3': {'hostname': 'aos_server_3_3', 'eth0': 'virbr0', 'eth1': 'none'},}
+aos_vm = {'apstra_server': {'hostname': 'apstra_server', 'eth0': 'virbr0', 'eth1': 'none'},}
 
 
 def create_vqfx_dic():
@@ -274,11 +275,11 @@ def create_lab_aos():
 
     aos_vm.get('key1', {}).get('key2')
 
-    hostname = aos_vm['aos_server_3_3'].get('hostname')
-    eth0 = aos_vm['aos_server_3_3'].get('eth0')
-    eth1 = aos_vm['aos_server_3_3'].get('eth1')
+    hostname = aos_vm['apstra_server'].get('hostname')
+    eth0 = aos_vm['apstra_server'].get('eth0')
+    eth1 = aos_vm['apstra_server'].get('eth1')
 
-    copy_aos_image = f'cp images/aos_server_3.3.0.2-46.qcow2 {image_path}{hostname}.qcow2'
+    copy_aos_image = f'cp images/{apstra_image} {image_path}{hostname}.qcow2'
     subprocess.call(copy_aos_image, shell=True)
 
     install_aos = f'virt-install --name={hostname} \
@@ -299,7 +300,7 @@ def delete_lab_aos():
     print("---------------------------------------------------------")
     print("--------------------------------------------------------- Deleting AOS Server")
 
-    get_c_vm_name = subprocess.Popen("virsh list --all | egrep 'aos_server' | awk '{print $2}'", shell=True,
+    get_c_vm_name = subprocess.Popen("virsh list --all | egrep 'apstra_server' | awk '{print $2}'", shell=True,
                                      stdout=subprocess.PIPE).stdout.read().decode('utf-8')
     li_vm = list(get_c_vm_name.split("\n"))
     result = [x for x in li_vm if x]
@@ -313,7 +314,7 @@ def delete_lab_aos():
         subprocess.call(destroy_image, shell=True)
         subprocess.call(undefine_image, shell=True)
 
-        delete_image = f"rm -f {image_path}aos_server_3_3.qcow2"
+        delete_image = f"rm -f {image_path}apstra_server.qcow2"
         subprocess.call(delete_image, shell=True)
 
 
