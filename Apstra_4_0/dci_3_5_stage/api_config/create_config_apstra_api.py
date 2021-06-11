@@ -598,74 +598,6 @@ def send_physical_device_parameters_dc2(blueprint_name):
 
 
 """
-configuring external router in the blueprint
-"""
-
-
-def blueprint_external_router_import(blueprint_name, external_router_id):
-
-    print(f"--------------------Importing external router : {external_router_id} to blueprint: {blueprint_name}")
-
-    """
-    Import external router in the blueprint
-    """
-
-    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_external_router_import_url}'
-    data = f'''
-    {{
-    "router_id": "{external_router_id}"
-    }}
-    '''
-    response = apstra_post(url=url, data=data)
-    return response
-
-
-def create_external_router_link(blueprint_name, router_name):
-
-    print(f"--------------------creating external router link : {router_name} to blueprint: {blueprint_name}")
-
-    """
-    get external router id
-    """
-    external_router_id_url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_external_router_import_url}'
-
-    external_router_response = apstra_get(url=external_router_id_url)
-    for external_router in external_router_response.json()['items']:
-        if external_router['display_name'] == router_name:
-            router_id = external_router['id']
-
-    """
-    get external router link id name: return example: jnpr_border_leaf_001_leaf1<->router0001
-    """
-
-    router_id_url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_external_router_links_url}'
-    response = apstra_get(url=router_id_url)
-
-    router_link_id = []
-    for router_link in response.json()['links']:
-        router_link_id.append(f'"{router_link}"')
-
-    list_json = ','.join(set(router_link_id))
-
-    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_external_router_links_url}/{router_id}'
-
-    """
-    now with the router id + router link id we can send the right put. 
-    """
-
-    data = f'''
-    {{
-    "connectivity_type": "l3",
-    "links": [
-    {list_json}
-    ]
-    }}
-    '''
-    response = apstra_put(url=url, data=data)
-    return response
-
-
-"""
 Security Zone and Virtual Network
 """
 
@@ -783,107 +715,6 @@ def get_blueprint_virtual_network(blueprint_name, vlan_name):
     return vn_id
 
 
-def set_blueprint_server_link(blueprint_name, vlan_name):
-
-    print(f"--------------------Attaching interface to virtual network: {vlan_name}")
-    """
-    call get_blueprint_virtual_network to get the virtual network ID
-    get the server link id and call set_blueprint_interface_virtual_network to send the parameters
-    """
-
-    vn_id = get_blueprint_virtual_network(blueprint_name, vlan_name)
-
-    server_links_url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}/experience/web/leaf-server-links/{vn_id}'
-    server_links_response = apstra_get(server_links_url)
-    server_links_response_json = server_links_response.json()
-
-    if blueprint_name == "DC1":
-        for link in server_links_response_json['links']:
-            if link['label'] == "jnpr_esi_leaf_001_leaf_pair1<->jnpr_esi_leaf_001_server001(server-1-dual-link)":
-                for endpoint in link['endpoints']:
-                    if endpoint['system']['label'] == "jnpr_esi_leaf_001_server001":
-                        sl_id_1 = endpoint['interface']['id']
-
-            elif link['label'] == "jnpr_single_leaf_001_leaf1<->jnpr_single_leaf_001_server001(server-1-link-1)[1]":
-                for endpoint in link['endpoints']:
-                    if endpoint['system']['label'] == "jnpr_single_leaf_001_server001":
-                        sl_id_2 = endpoint['interface']['id']
-
-            elif link['label'] == "jnpr_single_leaf_001_leaf1<->jnpr_single_leaf_001_server002(server-2-link-1)[1]":
-                for endpoint in link['endpoints']:
-                    if endpoint['system']['label'] == "jnpr_single_leaf_001_server002":
-                        sl_id_3 = endpoint['interface']['id']
-
-            elif link['label'] == "jnpr_esi_leaf_001_leaf2<->jnpr_esi_leaf_001_server003(server-3-link-1)[1]":
-                for endpoint in link['endpoints']:
-                    if endpoint['system']['label'] == "jnpr_esi_leaf_001_server003":
-                        sl_id_4 = endpoint['interface']['id']
-
-            elif link['label'] == "jnpr_single_leaf_001_leaf1<->jnpr_single_leaf_001_server003(server-3-link-1)[1]":
-                for endpoint in link['endpoints']:
-                    if endpoint['system']['label'] == "jnpr_single_leaf_001_server003":
-                        sl_id_5 = endpoint['interface']['id']
-
-        #vlan 10
-        if blueprint_name == "DC1":
-            if vlan_name == "VLAN10":
-                set_blueprint_interface_virtual_network(blueprint_name, vn_id, sl_id_1, sl_id_2)
-            #vlan 20
-            if vlan_name == "VLAN20":
-                set_blueprint_interface_virtual_network(blueprint_name, vn_id, sl_id_3, None)
-            #vlan 100
-            if vlan_name == "VLAN100":
-                set_blueprint_interface_virtual_network(blueprint_name, vn_id, sl_id_4, None)
-            #vlan 200
-            if vlan_name == "VLAN200":
-                set_blueprint_interface_virtual_network(blueprint_name, vn_id, sl_id_5, None)
-
-    elif blueprint_name == "DC2":
-
-        for link in server_links_response_json['links']:
-            if link['label'] == "leaf001_002_1<->server001_002_001(server-1-link-1)[1]":
-                for endpoint in link['endpoints']:
-                    if endpoint['system']['label'] == "server001_002_001":
-                        sl_id_1 = endpoint['interface']['id']
-
-            elif link['label'] == "leaf002_002_1<->server002_002_001(server-1-link-1)[1]":
-                for endpoint in link['endpoints']:
-                    if endpoint['system']['label'] == "server002_002_001":
-                        sl_id_2 = endpoint['interface']['id']
-
-            elif link['label'] == "leaf001_002_1<->server001_002_002(server-2-link-1)[1]":
-                for endpoint in link['endpoints']:
-                    if endpoint['system']['label'] == "server001_002_002":
-                        sl_id_3 = endpoint['interface']['id']
-
-            elif link['label'] == "leaf002_002_1<->server002_002_002(server-2-link-1)[1]":
-                for endpoint in link['endpoints']:
-                    if endpoint['system']['label'] == "server002_002_002":
-                        sl_id_4 = endpoint['interface']['id']
-
-            elif link['label'] == "leaf002_002_1<->server002_002_003(server-3-link-1)[1]":
-                for endpoint in link['endpoints']:
-                    if endpoint['system']['label'] == "server002_002_003":
-                        sl_id_5 = endpoint['interface']['id']
-
-            elif link['label'] == "leaf001_002_1<->server001_002_003(server-3-link-1)[1]":
-                for endpoint in link['endpoints']:
-                    if endpoint['system']['label'] == "server001_002_003":
-                        sl_id_6 = endpoint['interface']['id']
-
-        if vlan_name == "VLAN10":
-            set_blueprint_interface_virtual_network(blueprint_name, vn_id, sl_id_1, sl_id_2)
-        #vlan 20
-        if vlan_name == "VLAN20":
-            set_blueprint_interface_virtual_network(blueprint_name, vn_id, sl_id_3, sl_id_4)
-        #vlan 100
-        if vlan_name == "VLAN30":
-            set_blueprint_interface_virtual_network(blueprint_name, vn_id, sl_id_5, None)
-        #vlan 200
-        if vlan_name == "VLAN200":
-            set_blueprint_interface_virtual_network(blueprint_name, vn_id, sl_id_6, None)
-
-
 def set_blueprint_interface_virtual_network(blueprint_name, vn_id, sl_1, sl_2):
 
     """
@@ -956,17 +787,6 @@ def set_remote_gateway(blueprint_name, gw_asn, gw_name, gw_ip, vqfx_name):
 
     print(f"--------------------Configuring remote gateway: {gw_name} - blueprint: {blueprint_name}")
 
-    """
-    external_links_url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_external_router_links_url}'
-    external_links_response = apstra_get(external_links_url)
-
-    external_link_id = []
-    for key, value in external_links_response.json()['links'].items():
-        system_id = value["system_id"]
-        external_link_id.append(f'"{system_id}"')
-
-    list_json = ','.join(set(external_link_id))
-    """
     gw_list = ba.get_external_router_id(blueprint_name, vqfx_name)
 
     url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.blueprint_remote_gateway_url}'
@@ -985,18 +805,8 @@ def set_remote_gateway(blueprint_name, gw_asn, gw_name, gw_ip, vqfx_name):
     response = apstra_post(url=url, data=data)
 
 
-############################# Draft for connectivity templates
-
-
-def get_dc1_info():
-
-    url = 'https://127.0.0.1:8900/api/blueprints/DC1/'
-    response = apstra_get(url=url)
-    print(response.json())
-
-
 if __name__ == '__main__':
-    """
+
     print("################################################### Creating Common resources")
     create_asn_pool("DC1-ASN-POOL", 100, 199)
     create_asn_pool("DC2-ASN-POOL", 200, 299)
@@ -1047,8 +857,7 @@ if __name__ == '__main__':
     create_blueprint("DC1", "JNPR-3-STAGE-TEMPLATE")
     create_blueprint("DC2", "JNPR-5-STAGE-TEMPLATE")
     sleep(10)
-    """
-    """
+
     #--------------------- DC1
     print("################################################### DC1 Configuration")
     
@@ -1114,11 +923,9 @@ if __name__ == '__main__':
     sleep(1)
     ct.set_blueprint_server_link("DC1", "CT-VLAN200", "jnpr_single_leaf_001", "xe-0/0/4")
 
-
     sleep(5)
     
     set_deploy_blueprint("DC1", "DC1 full config")
-    
 
     #--------------------- DC2
     print("################################################### DC2 Configuration")
@@ -1191,8 +998,6 @@ if __name__ == '__main__':
     ct.set_blueprint_server_link("DC2", "CT-VLAN30", "jnpr_single_leaf_002_001", "xe-0/0/4")
     
     set_deploy_blueprint("DC2", "DC2 full config")
-
-    """
 
     print("################################################### Remote Gateways Configuration")
     set_remote_gateway("DC1", 203, "DC2-BL1", "20.20.30.0", ["jnpr_border_leaf_001_leaf1"])

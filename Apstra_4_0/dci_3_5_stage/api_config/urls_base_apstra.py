@@ -10,7 +10,7 @@ import json
 requests.packages.urllib3.disable_warnings()
 
 # Basic information
-apstra_url = 'https://127.0.0.1:8101'
+apstra_url = 'https://127.0.0.1:8900'
 apstra_port = '8900'
 username = 'admin'
 password = 'admin'
