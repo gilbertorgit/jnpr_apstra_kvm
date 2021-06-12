@@ -8,6 +8,7 @@
 
 
 ```
+root@lab:/home/lab/vmx# cd api_config/
 root@lab:/home/lab/vmx/api_config# python3.7 create_config_apstra_api.py 
 
 ```

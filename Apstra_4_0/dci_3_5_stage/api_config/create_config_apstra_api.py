@@ -681,6 +681,29 @@ def set_remote_gateway(blueprint_name, gw_asn, gw_name, gw_ip, vqfx_name):
     response = ba.apstra_post(url=url, data=data)
 
 
+def set_external_router_interface_mtu(blueprint_name, mtu_number, type5_routes):
+
+    print(f"--------------------Configuring external interface MTU: {mtu_number} - blueprint: {blueprint_name}")
+
+    get_vn_policy_id = ba.get_virtual_network_policy_id(blueprint_name)
+
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}/nodes/{get_vn_policy_id}'
+
+    data = f'''
+    {{
+    "evpn_generate_type5_host_routes": "{type5_routes}",
+    "external_router_mtu": {mtu_number},
+    "max_evpn_routes": 0,
+    "max_external_routes": 0,
+    "max_fabric_routes": 0,
+    "max_mlag_routes": 0,
+    "overlay_control_protocol": "evpn"
+    }}
+    '''
+
+    response = ba.apstra_patch(url=url, data=data)
+
+
 if __name__ == '__main__':
 
     print("################################################### Creating Common resources")
@@ -884,4 +907,12 @@ if __name__ == '__main__':
     set_remote_gateway("DC2", 102, "DC1-BL1", "10.20.30.0", ["leaf001_001_1", "leaf002_001_1"])
     sleep(5)
     set_deploy_blueprint("DC2", "DC2 to DC1 External GW")
+    
 
+    print("################################################### External Router Link MTU Configuration and enabling Generate EVPN host routes")
+    set_external_router_interface_mtu("DC1", 9000, "enabled")
+    sleep(5)
+    set_deploy_blueprint("DC1", "External Router Link MTU 9000 and Generate EVPN host routes")
+    set_external_router_interface_mtu("DC2", 9000, "enabled")
+    sleep(5)
+    set_deploy_blueprint("DC2", "External Router Link MTU 9000 and Generate EVPN host routes")

@@ -2,7 +2,9 @@ set interfaces ge-0/0/0 mtu 9000
 set interfaces ge-0/0/0 unit 0 family inet address 30.0.0.1/31
 set interfaces ge-0/0/0 unit 0 family iso
 set interfaces ge-0/0/0 unit 0 family mpls
+set interfaces ge-0/0/6 mtu 9000
 set interfaces ge-0/0/6 unit 0 family inet address 20.2.2.1/31
+set interfaces ge-0/0/7 mtu 9000
 set interfaces ge-0/0/7 unit 0 family inet address 20.2.2.3/31
 set interfaces lo0 unit 0 family inet address 100.100.3.2/32
 set interfaces lo0 unit 0 family iso address 42.1001.0000.3002.00

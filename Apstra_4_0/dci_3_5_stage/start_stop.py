@@ -9,6 +9,9 @@ from time import sleep
 import create_lab
 import time
 
+"""
+In case you have a kernel with bridge lacp, stp enable you need to change to 65535
+"""
 #bridge_echo = 65535
 bridge_echo = 16384
 

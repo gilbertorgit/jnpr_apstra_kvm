@@ -220,3 +220,15 @@ def get_external_router_id(blueprint_name, vqfx_name):
     list_json = ','.join(set(external_link_id))
     return list_json
 
+
+def get_virtual_network_policy_id(blueprint_name):
+
+    url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}/nodes'
+    response = apstra_get(url=url)
+
+    for key, value in response.json()['nodes'].items():
+        if value != None:
+            if value.get('type') == "virtual_network_policy":
+                bl_id = (value.get('id'))
+
+    return bl_id
