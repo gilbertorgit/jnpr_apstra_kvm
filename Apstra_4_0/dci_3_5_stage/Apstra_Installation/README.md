@@ -6,6 +6,8 @@
 
 ## Getting Started
 
+* Apstra Server IP: 192.168.122.180
+
 Please, follow the steps below to configure the Apstra Server
 
 1. - Don't change the default password

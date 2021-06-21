@@ -55,7 +55,7 @@ This test lab has been built and tested using:
 
 ```
 1. Ubuntu 18.04.5 LTS
-2. Phisical Server with:
+2. Server with:
   2.1. 128GB RAM
   2.2. I9 with 14 Cores and Intel(R) Xeon(R) CPU E5-2683 v4 @ 2.10GHz
   2.3. 500GB - SSD
@@ -229,6 +229,9 @@ Select one Option:
 ***After creating the topology from scratch you will need to configure your Apstra server. A
 
 Access apstra server using console and check the instructions in the folder Apstra_Installation
+
+* Apstra Server IP: 192.168.122.180
+
 ```
 root@lab:~# virsh console aos_server_3_3
 ```
