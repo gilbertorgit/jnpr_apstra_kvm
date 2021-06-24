@@ -6,7 +6,7 @@
 
 ## Topology
 
-![Topology](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/Apstra_4_0/dci_3_5_stage/topology_prints/Topology-1.png)
+![Topology](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/Apstra_4_0/dci_3_5_stage/topology_prints/Topology.png)
 
 ![MGMT IP](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/Apstra_4_0/dci_3_5_stage/topology_prints/MGMT-IP.png)
 
