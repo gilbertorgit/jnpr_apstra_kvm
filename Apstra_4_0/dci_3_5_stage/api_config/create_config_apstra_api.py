@@ -824,7 +824,7 @@ if __name__ == '__main__':
 
     sleep(5)
     
-    set_deploy_blueprint("DC1", "DC1 full config")
+    set_deploy_blueprint("DC1", "DC1 Connectivity Templates")
 
     #--------------------- DC2
     print("################################################### DC2 Configuration")
@@ -896,7 +896,7 @@ if __name__ == '__main__':
     sleep(1)
     ct.set_blueprint_server_link("DC2", "CT-VLAN30", "jnpr_single_leaf_002_001", "xe-0/0/4")
     
-    set_deploy_blueprint("DC2", "DC2 full config")
+    set_deploy_blueprint("DC2", "DC2 Connectivity Templates")
 
     print("################################################### Remote Gateways Configuration")
     set_remote_gateway("DC1", 203, "DC2-BL1", "20.20.30.0", ["jnpr_border_leaf_001_leaf1"])
