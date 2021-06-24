@@ -230,8 +230,9 @@ Select one Option:
 
 Access apstra server using console and check the instructions in the folder Apstra_Installation
 
-* Apstra Server IP: 192.168.122.180
+* Apstra Server IP: 192.168.122.180 
 
+* Default user and password: admin/admin
 ```
 root@lab:~# virsh console aos_server_3_3
 ```
