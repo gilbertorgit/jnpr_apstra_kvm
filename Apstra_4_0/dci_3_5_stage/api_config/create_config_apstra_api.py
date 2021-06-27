@@ -301,7 +301,7 @@ def api_ct_int_assign(dic_data):
 
 
 if __name__ == '__main__':
-    """
+
     print("################################################### Creating Common resources")
 
     api_create_asn_pool()
@@ -318,7 +318,7 @@ if __name__ == '__main__':
     api_create_interface_map()
     api_create_rack_type()
     api_create_templates()
-    """
+
     api_create_blueprint()
 
     sleep(10)
@@ -372,8 +372,6 @@ if __name__ == '__main__':
     
     set_deploy_blueprint("DC1", "DC1 Connectivity Templates")
     sleep(5)
-    
-    
 
     # --------------------- DC2
     print("################################################### DC2 Configuration")
