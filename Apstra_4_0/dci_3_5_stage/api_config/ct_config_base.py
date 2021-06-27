@@ -4,16 +4,12 @@
  Date: 06/2021
 ---------------------------------
 """
+
+from apstra_gets import *
+import urls_base_apstra as url_ba
 import requests
 import json
 from time import sleep
-import base_apstra as ba
-import urls_base_apstra as url_ba
-import templates_data as td
-import rack_data as rd
-import logical_data as ld
-import int_map_data as imd
-from ipaddress import ip_address
 
 requests.packages.urllib3.disable_warnings()
 
@@ -32,8 +28,8 @@ def set_external_router_ct(blueprint_name, id_number, ct_name, peer_ip, peer_asn
     id_number -> necessary to tie the ids for subpolicies
     """
 
-    sz_defaul_id = ba.get_security_zone(blueprint_name)
-    rt_defaul_id = ba.get_route_policy(blueprint_name)
+    sz_defaul_id = get_security_zone(blueprint_name)
+    rt_defaul_id = get_route_policy(blueprint_name)
 
     url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.obj_policy_import_url}'
 
@@ -166,7 +162,7 @@ def set_external_router_ct(blueprint_name, id_number, ct_name, peer_ip, peer_asn
     ]
     }}
     '''
-    response = ba.apstra_put(url=url, data=data)
+    response = apstra_put(url=url, data=data)
 
 
 def set_virtual_network_ct(blueprint_name, id_number, ct_name, vn_name):
@@ -183,7 +179,7 @@ def set_virtual_network_ct(blueprint_name, id_number, ct_name, vn_name):
     id_number -> necessary to tie the ids for subpolicies
     """
 
-    vn_id = ba.get_virtual_network(blueprint_name, vn_name)
+    vn_id = get_virtual_network(blueprint_name, vn_name)
 
     url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}{url_ba.obj_policy_import_url}'
 
@@ -237,7 +233,7 @@ def set_virtual_network_ct(blueprint_name, id_number, ct_name, vn_name):
         ]
         }}
         '''
-    response = ba.apstra_put(url=url, data=data)
+    response = apstra_put(url=url, data=data)
 
 
 def set_blueprint_server_link(blueprint_name, ct_name, vqfx_name, interface):
@@ -254,8 +250,8 @@ def set_blueprint_server_link(blueprint_name, ct_name, vqfx_name, interface):
         id_number -> necessary to tie the ids for subpolicies
     """
 
-    policy_id = ba.get_ct_policies_id(blueprint_name, ct_name)
-    interface_id = ba.get_application_points_id(blueprint_name, vqfx_name, interface)
+    policy_id = get_ct_policies_id(blueprint_name, ct_name)
+    interface_id = get_application_points_id(blueprint_name, vqfx_name, interface)
 
     url = f'{url_ba.apstra_url}{url_ba.blueprints_url}/{blueprint_name}/obj-policy-batch-apply'
 
@@ -274,7 +270,6 @@ def set_blueprint_server_link(blueprint_name, ct_name, vqfx_name, interface):
       ]
     }}
     '''
-
-    response = ba.apstra_patch(data=data, url=url)
+    response = apstra_patch(data=data, url=url)
 
 
