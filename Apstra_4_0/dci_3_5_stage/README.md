@@ -282,6 +282,16 @@ root@lab:/home/lab/vmx/api_config# python3.7 create_config_apstra_api.py
 * The pyhon script will configure your core, however in case you have any trouble you can check and apply the configuration
   * Please check "core_config" folder
     
+## Customer VMs Access
+
+* Default user and password: lab/lab123
+
+```
+root@lab:# virsh console <VM_NAME>
+
+root@lab:# virsh console c1_v10_h1
+```
+
 ## Workaround vMX
 
 ***If you face any error to start any virtual MX, please run the following commands:***
