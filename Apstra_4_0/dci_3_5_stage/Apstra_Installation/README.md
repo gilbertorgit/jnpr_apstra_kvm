@@ -8,6 +8,11 @@
 
 * Apstra Server IP: 192.168.122.180
 
+* Default user and password: admin/admin
+```
+root@lab:~# virsh console apstra_server
+```
+
 Please, follow the steps below to configure the Apstra Server
 
 1. - Don't change the default password

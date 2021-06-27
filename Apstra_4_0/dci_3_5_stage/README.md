@@ -234,7 +234,7 @@ Access apstra server using console and check the instructions in the folder Apst
 
 * Default user and password: admin/admin
 ```
-root@lab:~# virsh console aos_server_3_3
+root@lab:~# virsh console apstra_server
 ```
 
 * If you want to know more, please check the link below for further information:
