@@ -1,0 +1,96 @@
+set interfaces ge-0/0/0 mtu 9000
+set interfaces ge-0/0/0 unit 0 family inet address 30.0.0.1/31
+set interfaces ge-0/0/0 unit 0 family iso
+set interfaces ge-0/0/0 unit 0 family mpls
+set interfaces ge-0/0/6 mtu 9000
+set interfaces ge-0/0/6 unit 0 family inet address 20.2.2.1/31
+set interfaces ge-0/0/7 mtu 9000
+set interfaces ge-0/0/7 unit 0 family inet address 20.2.2.3/31
+set interfaces lo0 unit 0 family inet address 100.100.3.2/32
+set interfaces lo0 unit 0 family iso address 42.1001.0000.3002.00
+set interfaces lo0 unit 1 family inet address 100.100.12.1/32
+set policy-options policy-statement advertise-default term 1 from route-filter 0.0.0.0/0 exact
+set policy-options policy-statement advertise-default term 1 to neighbor 20.20.31.0
+set policy-options policy-statement advertise-default term 1 to neighbor 20.20.31.1
+set policy-options policy-statement advertise-default term 1 then accept
+set policy-options policy-statement dc2-bl1-export term 1 from protocol bgp
+set policy-options policy-statement dc2-bl1-export term 1 from community dc2-bl2
+set policy-options policy-statement dc2-bl1-export term 1 then reject
+set policy-options policy-statement dc2-bl1-export term 2 from protocol direct
+set policy-options policy-statement dc2-bl1-export term 2 from route-filter 20.2.2.0/31 exact
+set policy-options policy-statement dc2-bl1-export term 2 from route-filter 20.2.2.2/31 exact
+set policy-options policy-statement dc2-bl1-export term 2 then reject
+set policy-options policy-statement dc2-bl1-export term 3 from protocol static
+set policy-options policy-statement dc2-bl1-export term 3 from route-filter 20.20.30.0/32 exact
+set policy-options policy-statement dc2-bl1-export term 3 from route-filter 20.20.30.2/32 exact
+set policy-options policy-statement dc2-bl1-export term 3 then reject
+set policy-options policy-statement dc2-bl1-export term 4 from route-filter 0.0.0.0/0 exact
+set policy-options policy-statement dc2-bl1-export term 4 then accept
+set policy-options policy-statement dc2-bl1-export term 5 then accept
+set policy-options policy-statement dc2-bl1-import term 1 from protocol bgp
+set policy-options policy-statement dc2-bl1-import term 1 then community add dc2-bl1
+set policy-options policy-statement dc2-bl1-import term 1 then accept
+set policy-options policy-statement dc2-bl2-export term 1 from protocol bgp
+set policy-options policy-statement dc2-bl2-export term 1 from community dc2-bl1
+set policy-options policy-statement dc2-bl2-export term 1 then reject
+set policy-options policy-statement dc2-bl2-export term 2 from protocol direct
+set policy-options policy-statement dc2-bl2-export term 2 from route-filter 20.2.2.0/31 exact
+set policy-options policy-statement dc2-bl2-export term 2 from route-filter 20.2.2.2/31 exact
+set policy-options policy-statement dc2-bl2-export term 2 then reject
+set policy-options policy-statement dc2-bl2-export term 3 from protocol static
+set policy-options policy-statement dc2-bl2-export term 3 from route-filter 20.20.30.0/32 exact
+set policy-options policy-statement dc2-bl2-export term 3 from route-filter 20.20.30.2/32 exact
+set policy-options policy-statement dc2-bl2-export term 3 then reject
+set policy-options policy-statement dc2-bl2-export term 4 from route-filter 0.0.0.0/0 exact
+set policy-options policy-statement dc2-bl2-export term 4 then accept
+set policy-options policy-statement dc2-bl2-export term 5 then accept
+set policy-options policy-statement dc2-bl2-import term 1 from protocol bgp
+set policy-options policy-statement dc2-bl2-import term 1 then community add dc2-bl2
+set policy-options policy-statement dc2-bl2-import term 1 then accept
+set policy-options policy-statement vrf-dc1-export term 1 from protocol static
+set policy-options policy-statement vrf-dc1-export term 1 from route-filter 0.0.0.0/0 exact
+set policy-options policy-statement vrf-dc1-export term 1 then reject
+set policy-options policy-statement vrf-dc1-export term 2 then community add dc1
+set policy-options policy-statement vrf-dc1-export term 2 then accept
+set policy-options policy-statement vrf-dc1-import term 1 from protocol bgp
+set policy-options policy-statement vrf-dc1-import term 1 from community dc1
+set policy-options policy-statement vrf-dc1-import term 1 then accept
+set policy-options policy-statement vrf-dc1-import term 2 then reject
+set policy-options community dc1 members target:65002:1
+set policy-options community dc2-bl1 members 203:1
+set policy-options community dc2-bl2 members 205:1
+set routing-instances dci routing-options static route 0.0.0.0/0 discard
+set routing-instances dci protocols bgp group dc type external
+set routing-instances dci protocols bgp group dc multihop ttl 10
+set routing-instances dci protocols bgp group dc multipath multiple-as
+set routing-instances dci protocols bgp group dc neighbor 20.2.2.0 import dc2-bl1-import
+set routing-instances dci protocols bgp group dc neighbor 20.2.2.0 export dc2-bl1-export
+set routing-instances dci protocols bgp group dc neighbor 20.2.2.0 peer-as 203
+set routing-instances dci protocols bgp group dc neighbor 20.2.2.2 import dc2-bl2-import
+set routing-instances dci protocols bgp group dc neighbor 20.2.2.2 export dc2-bl2-export
+set routing-instances dci protocols bgp group dc neighbor 20.2.2.2 peer-as 205
+set routing-instances dci instance-type vrf
+set routing-instances dci interface ge-0/0/6.0
+set routing-instances dci interface ge-0/0/7.0
+set routing-instances dci interface lo0.1
+set routing-instances dci route-distinguisher 100.100.3.2:1
+set routing-instances dci vrf-import vrf-dc1-import
+set routing-instances dci vrf-export vrf-dc1-export
+set routing-options router-id 100.100.3.2
+set routing-options autonomous-system 65002
+set protocols bgp group internal type internal
+set protocols bgp group internal local-address 100.100.3.2
+set protocols bgp group internal family inet unicast
+set protocols bgp group internal family inet-vpn unicast
+set protocols bgp group internal neighbor 100.100.3.1
+set protocols isis interface ge-0/0/0.0 point-to-point
+set protocols isis interface lo0.0 passive
+set protocols ldp interface all
+set protocols ldp interface fxp0.0 disable
+set protocols mpls icmp-tunneling
+set protocols mpls interface all
+set protocols mpls interface fxp0.0 disable
+set protocols lldp port-id-subtype interface-name
+set protocols lldp port-description-type interface-description
+set protocols lldp neighbour-port-info-display port-id
+set protocols lldp interface all

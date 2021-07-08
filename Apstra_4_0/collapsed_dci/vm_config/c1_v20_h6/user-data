@@ -1,0 +1,26 @@
+#cloud-config
+users:
+  - name: root
+  - name: lab
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: users, admin
+    home: /home/lab
+
+ssh_pwauth: 1
+disable_root: 0
+
+chpasswd:
+  list: |
+    root:juniper123
+    lab:lab123
+  expire: false
+
+package_update: false
+package_upgrade: false
+package_reboot_if_required: true
+
+timezone: Europe/London
+
+output: {all: '| tee -a /var/log/cloud-init-output.log'}
+
+# vim:syntax=yaml
