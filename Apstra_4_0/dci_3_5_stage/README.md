@@ -87,10 +87,10 @@ root@lab:~# apt -y install python3-paramiko
 ```
 
 ```
-root@lab:~# usermod -aG libvirtd $USER
+root@lab:~# usermod -aG libvirt $USER
 root@lab:~# usermod -aG kvm $USER
 
-root@lab:~# usermod -aG libvirtd lab
+root@lab:~# usermod -aG libvirt lab
 root@lab:~# usermod -aG kvm lab
 ```
 
