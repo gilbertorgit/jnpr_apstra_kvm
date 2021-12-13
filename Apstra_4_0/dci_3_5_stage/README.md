@@ -79,7 +79,7 @@ root@lab:~# add-apt-repository ppa:deadsnakes/ppa
 root@lab:~# apt-get -y update
 root@lab:~# apt-get -y install qemu qemu-kvm libvirt-daemon bridge-utils virt-manager ntp net-tools git python3.7 python3-dev python3-pip python3.7-dev libguestfs-tools
 
-
+root@lab:~# apt-get remove python-pexpect python3-pexpect
 root@lab:~# python3.7 -m pip install pexpect
 
 root@lab:~# apt -y install python3-scp
