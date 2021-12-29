@@ -73,8 +73,8 @@ def create_lab_vqfx():
 
     print("--------------------------------------------------------- Creating vQFX DC1 Images")
 
-    copy_vqf_pfe = f'cp images/vqfx-20.2R1-2019010209-pfe-qemu.qcow {image_path}vqfx-20.2R1.10-pfe.qcow2'
-    copy_vqf_re = f'cp images/jinstall-vqfx-10-f-20.2R1.10.img {image_path}vqfx-20.2R1.10-re.qcow2'
+    copy_vqf_pfe = f'cp images/vqfx-20.2R1-2019010209-pfe-qemu.qcow {pfe_image}'
+    copy_vqf_re = f'cp images/jinstall-vqfx-10-f-20.2R1.10.img {re_image}'
 
     subprocess.call(copy_vqf_pfe, shell=True)
     subprocess.call(copy_vqf_re, shell=True)
@@ -151,8 +151,8 @@ def delete_lab_vqfx():
     print("---------------------------------------------------------")
     print("--------------------------------------------------------- Deleting vQFX Topology")
 
-    delete_vqf_pfe = f'rm -f {image_path}vqfx-20.2R1.10-pfe.qcow2'
-    delete_vqf_re = f'rm -f {image_path}vqfx-20.2R1.10-re.qcow2'
+    delete_vqf_pfe = f'rm -f {pfe_image}'
+    delete_vqf_re = f'rm -f {re_image}'
 
     subprocess.call(delete_vqf_pfe, shell=True)
     subprocess.call(delete_vqf_re, shell=True)
@@ -184,7 +184,7 @@ def create_lab_vms():
     print("---------------------------------------------------------")
     print("--------------------------------------------------------- Creating Hosts VMs ")
 
-    copy_cloud_image = f'cp images/CentOS-7-x86_64-GenericCloud.qcow2 /var/lib/libvirt/images/'
+    copy_cloud_image = f'cp images/CentOS-7-x86_64-GenericCloud.qcow2 {generic_centos}'
     subprocess.call(copy_cloud_image, shell=True)
 
     customer_vm = create_vm_dic()
@@ -241,7 +241,7 @@ def delete_lab_vms():
     print("---------------------------------------------------------")
     print("--------------------------------------------------------- Deleting Host VMs")
 
-    delete_cloud_image = f'rm -f /var/lib/libvirt/images/CentOS-7-x86_64-GenericCloud.qcow2'
+    delete_cloud_image = f'rm -f {generic_centos}'
     subprocess.call(delete_cloud_image, shell=True)
 
     get_c_vm_name = subprocess.Popen("virsh list --all | egrep 'c[1-2]_v' | awk '{print $2}'", shell=True,
