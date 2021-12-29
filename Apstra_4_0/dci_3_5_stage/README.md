@@ -86,7 +86,7 @@ root@lab:/home/lab# apt -y install ansible git
 
 root@lab:/home/lab# git clone https://github.com/gmr2020git/jnpr_apstra_kvm.git
 
-root@lab:/home/lab# ansible-playbook ent_sonic_apstra/base-pkg-kvm/playbook.yml
+root@lab:/home/lab# ansible-playbook jnpr_apstra_kvm/base-pkg-kvm/playbook.yml
 ```
 
 ## Virtual MX Installation
@@ -97,15 +97,6 @@ Enable qemu-kvm hugepages
 
 ```
 root@lab:~# sed -i -e 's/KVM_HUGEPAGES=0/KVM_HUGEPAGES=1/' /etc/default/qemu-kvm
-```
-
-Install additional vMX packages
-
-```
-root@lab:~# apt-get -y install python-pip python-netifaces
-
-root@lab:~# pip install pyyaml 
-root@lab:~# pip install netifaces
 ```
 
 Configure hugepages
