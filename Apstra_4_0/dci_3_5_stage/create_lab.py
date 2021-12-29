@@ -412,7 +412,7 @@ def configure_vqfx():
 
 def configure_vmx():
 
-    print("We will wait around 1 minute to start the initial vMX CORE basic configuration")
+    print("We will wait around 1 minute to start the initial vMX CORE configuration")
     sleep(60)
 
     vmx_hosts = create_vmx_dic()

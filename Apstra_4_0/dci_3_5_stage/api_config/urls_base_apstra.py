@@ -10,8 +10,8 @@ import json
 requests.packages.urllib3.disable_warnings()
 
 # Basic information
-#apstra_url = 'https://192.168.122.180:443'
-apstra_url = 'https://127.0.0.1:8001'
+apstra_url = 'https://192.168.122.180:443'
+#apstra_url = 'https://127.0.0.1:8001'
 apstra_port = '443'
 username = 'admin'
 password = 'admin'
