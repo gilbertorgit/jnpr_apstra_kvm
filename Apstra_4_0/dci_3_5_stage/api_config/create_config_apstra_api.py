@@ -303,7 +303,7 @@ def api_ct_int_assign(dic_data):
 if __name__ == '__main__':
 
     print("################################################### Creating Common resources")
-    """
+
     api_create_asn_pool()
     api_create_vni_pool()
     api_create_ip_pool()
@@ -314,7 +314,7 @@ if __name__ == '__main__':
     check_agent_state()
     manage_device_all()
     sleep(5)
-    """
+
     print("################################################### Design")
     api_create_logical_devices()
     api_create_interface_map()
