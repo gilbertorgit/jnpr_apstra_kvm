@@ -15,6 +15,8 @@ In case you have a kernel with bridge lacp, stp enable you need to change to 655
 #bridge_echo = 65535
 bridge_echo = 16384
 
+virsh_list_filter = ["dc1_", "dc2_", "apstra_server", "c1_v", "c2_v" ]
+
 
 def clean_memory():
 
@@ -71,72 +73,33 @@ def defining_dummy_interfaces():
     return dummy_interface_list
 
 
-def getting_destroyed_vqfx():
+def get_virtual_machines_status(virsh_status="running", *args):
 
     """
-    create a list with all destroyed vQFX
+        create a list with all destroyed or running virtual machine
+        virsh_status: destroyed or running
+        *args: list of virtual machines
     """
-    print("---------------------------------------------------------")
-    print("---------------------------------------------------------")
-    print("--------------------------------------------------------- Get destroyed vqfx")
 
-    vqfx_info = subprocess.Popen("virsh list --all | egrep 'dc[1-2]_' | awk '{print $2}'", shell=True,
-                                 stdout=subprocess.PIPE).stdout.read().decode('utf-8')
-    # creates list of the vqfx_info and clean the empty spaces
-    li_vqfx = list(vqfx_info.split("\n"))
-    result = [ x for x in li_vqfx if x ]
-    return result
+    li_vrdc = []
+    for vm in args:
 
+        cmd_virsh_list = ''
+        if virsh_status == "destroyed":
+            cmd_virsh_list = f"virsh list --all | egrep {vm} | awk '{{print $2}}'"
+        if virsh_status == "running":
+            cmd_virsh_list = f"virsh list | egrep {vm} | awk '{{print $2}}'"
 
-def getting_destroyed_servers():
+        # get the output of the cmd_virsh_list, strip and decode in utf-8 - necessary to clean the list output
+        vrdc_info = subprocess.Popen(cmd_virsh_list, shell=True, stdout=subprocess.PIPE).stdout.read().strip().decode('utf-8')
 
-    """
-    create a list with all destroyed customer vm and Apstra Server
-    """
-    print("---------------------------------------------------------")
-    print("---------------------------------------------------------")
-    print("--------------------------------------------------------- Get destroyed Servers")
+        # creates list of the vrdc_info and clean the empty spaces
+        li_vrdc.extend(vrdc_info.split("\n"))
 
-    vqfx_info = subprocess.Popen("virsh list --all | egrep 'c[1-2]_v|apstra_server' | awk '{print $2}'", shell=True,
-                                 stdout=subprocess.PIPE).stdout.read().decode('utf-8')
-    # creates list of the vqfx_info and clean the empty spaces
-    li_vqfx = list(vqfx_info.split("\n"))
-    result = [ x for x in li_vqfx if x ]
-    return result
+    return li_vrdc
 
-
-def getting_running_vqfx():
-
-    """
-    create a list with all running vQFX
-    """
-    print("---------------------------------------------------------")
-    print("---------------------------------------------------------")
-    print("--------------------------------------------------------- Get Running vqfx")
-
-    vqfx_info = subprocess.Popen("virsh list | egrep 'dc[1-2]_' | awk '{print $2}'", shell=True,
-                                 stdout=subprocess.PIPE).stdout.read().decode('utf-8')
-    # creates list of the vqfx_info and clean the empty spaces
-    li_vqfx = list(vqfx_info.split("\n"))
-    result = [ x for x in li_vqfx if x ]
-    return result
-
-
-def getting_running_servers():
-
-    """
-    create a list with all running vQFX customer vm and Apstra Server
-    """
-    print("---------------------------------------------------------")
-    print("---------------------------------------------------------")
-    print("--------------------------------------------------------- Get Running Servers")
-
-    vqfx_info = subprocess.Popen("virsh list | egrep 'c[1-2]_|apstra_server' | awk '{print $2}'", shell=True,
-                                 stdout=subprocess.PIPE).stdout.read().decode('utf-8')
-    # creates list of the vqfx_info and clean the empty spaces
-    li_vqfx = list(vqfx_info.split("\n"))
-    result = [ x for x in li_vqfx if x ]
-    return result
+    # Legacy code - remove any empty spaces
+    # result = [ x for x in li_vrdc if x ]
 
 
 def create_fabric_interface():
@@ -207,6 +170,27 @@ def delete_fabric_interface():
         print(f'- Deleting Interface {dummy}')
 
 
+def start_stop_virtual_machine(virsh_action, virsh_status, *args):
+
+    """
+    :param virsh_action: start or destroy
+    :param virsh_status: running or destroyed
+    :param vm_description: i.e Virtual Sonic, Linux VM, Apstra, etc
+    :param args: List of virtual machines, i.e: virsh_list_filter = ["dc1-sonic-", "dc2-sonic-", "c1_v", "c2_v"]
+    :subprocess.call: run the virsh command with the action + vm
+    """
+    print(f"########################################################## Start/Stop Virtual Machines")
+
+    server_list = get_virtual_machines_status(virsh_status, *args)
+
+    for server in server_list:
+        if server != '':
+            command = f'/usr/bin/virsh {virsh_action} {server}'
+            print(f'- Start/Stop {server}')
+            subprocess.call(command, shell=True)
+            sleep(2)
+
+
 def start_vmx():
 
     print("########################################################## Start vMX R1 - R8")
@@ -238,69 +222,19 @@ def stop_vmx():
     subprocess.call(unbind_interfaces, shell=True)
 
 
-def start_servers():
-
-    print("########################################################## Start Host VMs and Apstra Server")
-    server_list = getting_destroyed_servers()
-
-    for server in server_list:
-        command = f'/usr/bin/virsh start {server}'
-        print(f'- Starting {server}')
-        subprocess.call(command, shell=True)
-        sleep(2)
-
-
-def stop_servers():
-
-    print("########################################################## Destroy Servers")
-    server_list = getting_running_servers()
-
-    for server in server_list:
-        command = f'/usr/bin/virsh destroy {server}'
-        print(f'- {server}')
-        subprocess.call(command, shell=True)
-        sleep(1)
-
-
-def start_vqfx():
-
-    print("########################################################## Start vQFX")
-    vqfx_list = getting_destroyed_vqfx()
-
-    for vqfx in vqfx_list:
-        command = f'/usr/bin/virsh start {vqfx}'
-        print(f'- Starting {vqfx}')
-        subprocess.call(command, shell=True)
-        sleep(2)
-
-
-def stop_vqfx():
-
-    print("########################################################## Destroy vQFX")
-    vqfx_list = getting_running_vqfx()
-
-    for vqfx in vqfx_list:
-        command = f'/usr/bin/virsh destroy {vqfx}'
-        print(f'- {vqfx}')
-        subprocess.call(command, shell=True)
-        sleep(1)
-
-
 def start_topology():
 
     print("########################################################## Start Topology")
     clean_memory()
     create_fabric_interface()
-    start_vqfx()
-    start_servers()
+    start_stop_virtual_machine("start", "destroyed", *virsh_list_filter)
     start_vmx()
 
 
 def stop_topology():
 
     print("########################################################## Stop Topology")
-    stop_vqfx()
-    stop_servers()
+    start_stop_virtual_machine("destroy", "running", *virsh_list_filter)
     stop_vmx()
     delete_fabric_interface()
     clean_memory()

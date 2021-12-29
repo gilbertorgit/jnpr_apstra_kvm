@@ -22,7 +22,7 @@ aos_vm = {'apstra_server': {'hostname': 'apstra_server', 'eth0': 'virbr0', 'eth1
 
 
 def create_vqfx_dic():
-    fhandle = open('routers_info.csv')
+    fhandle = open('vrdc_info.csv')
     hosts=dict()
     for line in fhandle:
         words = line.split(',')
