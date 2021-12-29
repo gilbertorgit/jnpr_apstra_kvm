@@ -126,8 +126,9 @@ root@lab:~# reboot
 ### Download vMX image to /home/lab
 
 ```
+lab@lab:~$ sudo su -
+root@lab:~$ cd /home/lab
 root@lab:/home/lab# tar -xzvf vmx-bundle-20.4R1.12.tgz
-
 ```
 ### Download Apstra, Centos GenericCloud, and vQFX Images and copy to vmx/images
 
@@ -138,8 +139,9 @@ root@lab:/home/lab# tar -xzvf vmx-bundle-20.4R1.12.tgz
 * vQFX - https://support.juniper.net/support/downloads/?p=vqfx-evaluation - Download as showed below:
 ![vQFX-Download](https://github.com/gilbertorgit/jnpr_apstra_kvm/blob/main/Apstra_4_0/dci_3_5_stage/topology_prints/vQFX-Download.png)
 
-
-* root@lab:~# cp aos_server_4.0.0-314.qcow2 CentOS-7-x86_64-GenericCloud.qcow2 jinstall-vqfx-10-f-20.2R1.10.img vqfx-20.2R1-2019010209-pfe-qemu.qcow   /home/lab/vmx/images/
+```
+root@lab:~# cp aos_server_4.0.0-314.qcow2 CentOS-7-x86_64-GenericCloud.qcow2 jinstall-vqfx-10-f-20.2R1.10.img vqfx-20.2R1-2019010209-pfe-qemu.qcow   /home/lab/vmx/images/
+```
 
 ***Make sure you download the right version as described in this guide. 
 You will have a directory like that one:***
