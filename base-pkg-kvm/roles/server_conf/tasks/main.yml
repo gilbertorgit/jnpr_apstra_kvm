@@ -1,0 +1,16 @@
+    - name: Creating user lab
+      group:
+        name: lab
+        state: present
+
+    - name: Configuring groups to user lab
+      user:
+        name: lab
+        groups: libvirt, kvm
+        append: yes
+
+    - name: Configuring groups to user root
+      user:
+        name: root
+        groups: libvirt, kvm
+        append: yes

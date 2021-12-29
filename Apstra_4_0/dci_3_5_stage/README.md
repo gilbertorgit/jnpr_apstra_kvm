@@ -69,29 +69,24 @@ This test lab has been built and tested using:
 
 ## Pre-deployment Server Configs
 
-### Pre-deployment Basic Packages
+### Pre-deployment Server Configs and Basic Packages
 
 **Packages Installation and configuration**
 
 ```
-lab@lab:~$ su -
-root@lab:~# add-apt-repository ppa:deadsnakes/ppa
-root@lab:~# apt-get -y update
-root@lab:~# apt-get -y install qemu qemu-kvm libvirt-daemon bridge-utils virt-manager ntp net-tools git python3.7 python3-dev python3-pip python3.7-dev libguestfs-tools
+lab@lab:~$ sudo su -
 
-root@lab:~# apt-get -y remove python-pexpect python3-pexpect
-root@lab:~# python3.7 -m pip install pexpect
+root@lab:~$ cd /home/lab
 
-root@lab:~# apt -y install python3-scp
-root@lab:~# apt -y install python3-paramiko
-```
+root@lab:/home/lab# add-apt-repository ppa:deadsnakes/ppa
 
-```
-root@lab:~# usermod -aG libvirt $USER
-root@lab:~# usermod -aG kvm $USER
+root@lab:/home/lab# apt-get -y update
 
-root@lab:~# usermod -aG libvirt lab
-root@lab:~# usermod -aG kvm lab
+root@lab:/home/lab# apt -y install ansible git
+
+root@lab:/home/lab# git clone https://github.com/gmr2020git/jnpr_apstra_kvm.git
+
+root@lab:/home/lab# ansible-playbook ent_sonic_apstra/base-pkg-kvm/playbook.yml
 ```
 
 ## Virtual MX Installation
@@ -191,8 +186,6 @@ total 7997348
 ## Cloning jnpr_apstra_kvm project
 
 ```
-root@lab:/home/lab# git clone https://github.com/gmr2020git/jnpr_apstra_kvm.git
-
 root@lab:/home/lab# mv jnpr_apstra_kvm/Apstra_4_0/dci_3_5_stage/* vmx/
 
 root@lab:/home/lab# cd vmx/

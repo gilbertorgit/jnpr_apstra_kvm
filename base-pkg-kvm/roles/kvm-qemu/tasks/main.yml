@@ -1,0 +1,9 @@
+    - name: Install KVM-QEMU
+      apt: name={{ item }} state=present
+      with_items:
+       - qemu
+       - qemu-kvm
+       - libvirt-daemon
+       - bridge-utils
+       - virt-manager
+       - libguestfs-tools

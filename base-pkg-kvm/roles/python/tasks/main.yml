@@ -1,0 +1,28 @@
+    - name: Install Python
+      apt: name={{ item }} state=present
+      loop:
+       - python3.7
+       - python3-dev
+       - python3-pip
+       - python3.7-dev
+       - python3-scp
+       - python3-paramiko
+
+    - name: Additional Packages
+      apt: name={{ item }} state=present
+      loop:
+       - python-pip
+       - python-netifaces
+
+    - name: Remove Pexpect Conflicts
+      apt: name={{ item }} state=absent
+      loop:
+        - python-pexpect
+        - python3-pexpect
+
+    - name: Additional pip packages
+      command: "{{ item }}"
+      loop:
+        - 'python3.7 -m pip install pexpect'
+        - 'pip install pyyaml '
+        - 'pip install netifaces'

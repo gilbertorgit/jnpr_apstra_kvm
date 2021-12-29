@@ -1,0 +1,6 @@
+---
+  - name: Install Pyhon
+    hosts: localhost
+    roles:
+      - python
+      - additional_packages

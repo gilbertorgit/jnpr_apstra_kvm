@@ -1,0 +1,5 @@
+    - name: Install Additional Packages
+      apt: name={{ item }} state=present
+      with_items:
+       - ntp
+       - net-tools
