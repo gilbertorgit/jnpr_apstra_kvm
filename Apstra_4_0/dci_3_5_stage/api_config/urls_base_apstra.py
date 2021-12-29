@@ -11,7 +11,7 @@ requests.packages.urllib3.disable_warnings()
 
 # Basic information
 apstra_url = 'https://192.168.122.180:443'
-#apstra_url = 'https://127.0.0.1:8101'
+#apstra_url = 'https://127.0.0.1:8001'
 apstra_port = '443'
 username = 'admin'
 password = 'admin'
@@ -26,6 +26,7 @@ vni_pool_url = '/api/resources/vni-pools'
 external_router = '/api/resources/external-routers'
 
 # Onboading
+device_profiles_url = '/api/device-profiles'
 system_gent_url = '/api/system-agents'
 systems_url = '/api/systems/'
 systems_batch_update = '/api/systems-batch-update/'
@@ -50,6 +51,8 @@ blueprints_resouce_group_spine_superspine_link_url = '/resource_groups/ip/spine_
 blueprints_resouce_group_spine_leaf_link_url = '/resource_groups/ip/spine_leaf_link_ips'
 blueprints_resource_groups_ip_to_generic_link_ips_url = '/resource_groups/ip/to_generic_link_ips'
 blueprints_resouce_group_vni_url = '/resource_groups/vni/evpn_l3_vnis'
+blueprints_resource_groups_svi_subnet_mlag = '/resource_groups/ip/mlag_domain_svi_subnets'
+blueprints_resource_groups_vtep_ips = '/resource_groups/ip/vtep_ips'
 
 blueprint_device_id_url = '/cabling-map'
 

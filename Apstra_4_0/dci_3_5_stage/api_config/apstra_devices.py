@@ -14,6 +14,10 @@ from ipaddress import ip_address
 requests.packages.urllib3.disable_warnings()
 
 
+def create_device_profiles():
+    pass
+
+
 def create_ip_list(start, end):
 
     start_int = int(ip_address(start).packed.hex(), 16)
@@ -21,7 +25,33 @@ def create_ip_list(start, end):
     return [ip_address(ip).exploded for ip in range(start_int, end_int)]
 
 
-def create_offbox_device(start_ip, end_ip, username=f'lab', password=f'lab123', platform=f'junos',
+def create_onbox_device(start_ip, end_ip, username=f'admin', password=f'admin',
+                         agent_type='onbox', operation_mode='full_control'):
+
+    print(f'--------------------Creating Onbox Devices')
+    url = f'{url_ba.apstra_url}{url_ba.system_gent_url}'
+
+    mgmt_list = create_ip_list(start_ip, end_ip)
+    response_list = []
+    for ip in mgmt_list:
+        print(f'--------------------Creating Onbox device: {ip}')
+        data = f'''{{
+        "agent_type": "{agent_type}",
+        "install_requirements": true,
+        "job_on_create": "install",
+        "management_ip": "{ip}",
+        "operation_mode": "{operation_mode}",
+        "username": "{username}",
+        "password": "{password}"
+        }}'''
+
+        response = ba.apstra_post(url=url, data=data)
+        response_list.append(response)
+        sleep(2)
+    return response_list
+
+
+def create_offbox_device(start_ip, end_ip, username=f'admin', password=f'admin', platform=f'junos',
                          agent_type='offbox', operation_mode='full_control'):
 
     print(f'--------------------Creating Offbox Devices')
@@ -40,6 +70,7 @@ def create_offbox_device(start_ip, end_ip, username=f'lab', password=f'lab123', 
         "agent_type": "{agent_type}",
         "operation_mode": "{operation_mode}"
         }}'''
+
         response = ba.apstra_post(url=url, data=data)
         response_list.append(response)
         sleep(2)
@@ -60,6 +91,35 @@ def manage_device(system_id, model):
     }}'''
     response = ba.apstra_post(url=url, data=data)
     return response
+
+
+def get_system_agents():
+
+    url = f'{url_ba.apstra_url}{url_ba.system_gent_url}'
+    response = ba.apstra_get(url=url)
+    return response
+
+
+def check_agent_state():
+
+    print(f"################################################### Checking Onbox/Offbox state before manage devices ")
+
+    sa_response = get_system_agents()
+    sa_response_json = sa_response.json()
+
+    check_list = []
+    for a in sa_response_json['items']:
+        check_list.append(a['status']['state'])
+
+    print(f"- {check_list}")
+
+    if any(it != 'success' for it in check_list):
+        print("- Checking Onbox/Offbox devices status = Success. It can take some time")
+        sleep(10)
+        check_agent_state()
+    else:
+        print(f"- {check_list}")
+        print("- All devices have been onboarded")
 
 
 def manage_device_all():

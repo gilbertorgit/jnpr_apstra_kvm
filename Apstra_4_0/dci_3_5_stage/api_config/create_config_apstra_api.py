@@ -310,7 +310,7 @@ if __name__ == '__main__':
     
     sleep(2)
     create_offbox_device('192.168.122.215', '192.168.122.228')
-    sleep(60)
+    check_agent_state()
     manage_device_all()
     sleep(5)
     
