@@ -303,22 +303,24 @@ def api_ct_int_assign(dic_data):
 if __name__ == '__main__':
 
     print("################################################### Creating Common resources")
-
+    """
     api_create_asn_pool()
     api_create_vni_pool()
     api_create_ip_pool()
-    
+
     sleep(2)
+    print("################################################### Onbox/Offbox and Manage Devices")
     create_offbox_device('192.168.122.215', '192.168.122.228')
     check_agent_state()
     manage_device_all()
     sleep(5)
-    
+    """
+    print("################################################### Design")
     api_create_logical_devices()
     api_create_interface_map()
     api_create_rack_type()
     api_create_templates()
-
+    print("################################################### Create Blueprint")
     api_create_blueprint()
 
     sleep(10)
@@ -447,6 +449,3 @@ if __name__ == '__main__':
     set_external_router_interface_mtu("DC2", 9000, "enabled")
     sleep(5)
     set_deploy_blueprint("DC2", "External Router Link MTU 9000 and Generate EVPN host routes")
-
-
-

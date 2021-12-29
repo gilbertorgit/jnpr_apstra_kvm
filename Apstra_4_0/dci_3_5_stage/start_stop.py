@@ -308,6 +308,7 @@ if __name__ == "__main__":
             print(f'Time to configure: {run_time_min}')
             print("- Default user and password")
             print("- lab/lab123 and root/juniper123")
+            print("- Apstra: admin/admin")
         else:
             print("Wrong option!! Nothing to do!")
             exit()
