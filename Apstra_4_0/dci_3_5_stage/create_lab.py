@@ -16,7 +16,7 @@ re_image = '/var/lib/libvirt/images/vqfx-20.2R1.10-re.qcow2'
 pfe_image = '/var/lib/libvirt/images/vqfx-20.2R1.10-pfe.qcow2'
 generic_centos = '/var/lib/libvirt/images/CentOS-7-x86_64-GenericCloud.qcow2'
 image_path = '/var/lib/libvirt/images/'
-apstra_image = 'aos_server_4.0.0-314.qcow2'
+apstra_image = 'aos_server_4.0.2-142.qcow2'
 
 aos_vm = {'apstra_server': {'hostname': 'apstra_server', 'eth0': 'virbr0', 'eth1': 'none'},}
 
