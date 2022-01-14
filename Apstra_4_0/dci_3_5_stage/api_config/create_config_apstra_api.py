@@ -307,11 +307,13 @@ if __name__ == '__main__':
     api_create_asn_pool()
     api_create_vni_pool()
     api_create_ip_pool()
-
+    
     sleep(2)
+    
     print("################################################### Onbox/Offbox and Manage Devices")
     create_offbox_device('192.168.122.215', '192.168.122.228')
     check_agent_state()
+    check_connection_state()
     manage_device_all()
     sleep(5)
 

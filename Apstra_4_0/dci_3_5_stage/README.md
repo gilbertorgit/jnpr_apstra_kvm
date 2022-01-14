@@ -157,7 +157,7 @@ You will have a directory like that one:***
 ```
 root@lab:/home/lab/vmx# ls -l /home/lab/vmx/images/
 total 7997348
--rw-r--r-- 1 root root 1951413760 Mar 25 11:07 aos_server_4.0.0-314.qcow2
+-rwx------ 1 root root 1972913664 Jan 14 09:22 aos_server_4.0.2-142.qcow2
 -rw-r--r-- 1 root root  858783744 Mar 25 11:08 CentOS-7-x86_64-GenericCloud.qcow2
 -rw-r--r-- 1 root root  588251136 Mar 25 11:08 jinstall-vqfx-10-f-20.2R1.10.img
 -rw-r--r-- 1  930  930 1391656960 Dec 20 14:46 junos-vmx-x86-64-20.4R1.12.qcow2

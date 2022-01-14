@@ -64,7 +64,7 @@ def create_offbox_device(start_ip, end_ip, username=f'lab', password=f'lab123', 
         data = f'''{{
         "username": "{username}",
         "password": "{password}",
-        "job_on_create": "check",
+        "job_on_create": "install",
         "platform": "{platform}",
         "management_ip": "{ip}",
         "agent_type": "{agent_type}",
@@ -120,6 +120,29 @@ def check_agent_state():
     else:
         print(f"- {check_list}")
         print("- All devices have been onboarded")
+
+
+def check_connection_state():
+
+    print(f"################################################### Checking Onbox/Offbox state before manage devices ")
+    sleep(5)
+    sa_response = get_system_agents()
+    sa_response_json = sa_response.json()
+
+    check_list = []
+    for a in sa_response_json['items']:
+        check_list.append(a['status']['connection_state'])
+
+    print(f"- {check_list}")
+
+    if any(it != 'connected' for it in check_list):
+        print("- Checking Onbox/Offbox devices status = connected. It can take some time")
+        sleep(5)
+        check_connection_state()
+    else:
+        print(f"- {check_list}")
+        print("- All devices are connected")
+
 
 def manage_device_all():
 
