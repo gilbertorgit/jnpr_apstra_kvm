@@ -102,7 +102,7 @@ def get_system_agents():
 
 def check_agent_state():
 
-    print(f"################################################### Checking Onbox/Offbox state before manage devices ")
+    print(f"################################################### Checking Onbox/Offbox job state before manage devices ")
     sleep(5)
     sa_response = get_system_agents()
     sa_response_json = sa_response.json()
@@ -124,7 +124,7 @@ def check_agent_state():
 
 def check_connection_state():
 
-    print(f"################################################### Checking Onbox/Offbox state before manage devices ")
+    print(f"################################################### Checking Onbox/Offbox connection state before manage devices ")
     sleep(5)
     sa_response = get_system_agents()
     sa_response_json = sa_response.json()
@@ -136,7 +136,7 @@ def check_connection_state():
     print(f"- {check_list}")
 
     if any(it != 'connected' for it in check_list):
-        print("- Checking Onbox/Offbox devices status = connected. It can take some time")
+        print("- Checking Onbox/Offbox connection state = connected. It can take some time")
         sleep(5)
         check_connection_state()
     else:
