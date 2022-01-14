@@ -209,7 +209,6 @@ def create_lab_vms():
         subprocess.call(exapand_img, shell=True)
         subprocess.call(add_metadata, shell=True)
 
-        print(f'######################### bond')
         if bond == "True":
             install_c_vm = f'virt-install --import --name {hostname} \
             --ram 1024 --vcpus 1 \
