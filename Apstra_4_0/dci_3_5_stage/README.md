@@ -202,6 +202,12 @@ root@lab:/home/lab# cd vmx/
 4. - Create Topology - It will create the entire topology from scratch
 5. - Delete Topology - It will delete and remove the entire topology and images
 
+* In case you are running your environment under a vmware hypervisor, you have to run a guestfish workaround before this script:
+
+```
+root@lab:~# export LIBGUESTFS_BACKEND_SETTINGS=force_tcg
+```
+
 ```
 root@lab:/home/lab/vmx# python3.7 start_stop.py 
 1 - Start Topology
