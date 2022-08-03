@@ -16,4 +16,6 @@ https://github.com/gilbertorgit?tab=repositories
 
 1. Enterprise Sonic and Apstra
    1. https://github.com/gilbertorgit/ent_sonic_apstra
+2. Enterprise Sonic - DCI Topology with API Automation
+   1. https://github.com/gilbertorgit/sonic_dci_api
 
